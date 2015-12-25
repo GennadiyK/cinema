@@ -7,12 +7,23 @@ var cinema = {
 			'operator'
 			]
 		},
-		visitors: [
+		visitors: {
+			clients:[
 			'child', 
 			'adult'
 			],
+			employes:[
+			'accountant',
+			'manager',
+			'operator',
+			'cashier',
+			'security'
+			]
+			},
 		tickets: {
-			price: []
+			price: [
+					
+			]
 		}
 	},
 	methods: {

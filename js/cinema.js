@@ -38,17 +38,19 @@ cinema.renderPeople = function() {
 
 	//render header ot table
 	if(cinema.peopleCollection[0]) {
+		tr = document.createElement('tr');
 		for(var i in cinema.peopleCollection[0]) {
 			th = document.createElement('th');
 			th.innerHTML = '<th>' + i + '</th>';
-			thead.appendChild(th);
+			tr.appendChild(th);
+			thead.appendChild(tr);
 		}
 	}
 
 	//render body
 	for(var x = 0; x < cinema.peopleCollection.length ; x++) {
 			tr = document.createElement('tr');
-			console.log(tr);
+			
 			for ( var key in cinema.peopleCollection[x]) {
 				td = document.createElement('td');
 				td.innerHTML = '<td>' +  cinema.peopleCollection[x][key] + '</td>';

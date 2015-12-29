@@ -20,7 +20,7 @@
 </div>
 
   <script type="text/template" id="cinemaTemplate">
-        <% _.each(peoples, function(items){ %>
+        <% _.each(peoples, function(items,key){ %>
             <tr>
                 <td><%= items.id %></td>
                 <td><%= items.name %></td>
@@ -33,7 +33,6 @@
   </script>
 
   <script src="js/peoples.js"></script>
-  <script src="js/templating.js"></script>
-  <!--<script src="js/cinema.js"></script>-->
+  <script src="js/cinema.js"></script>
 </body>
 </html>

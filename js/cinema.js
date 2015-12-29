@@ -29,40 +29,13 @@ cinema.cameraListener = function(id) {
 
 
 cinema.peopleCollectionView = function() {
-	var table = document.createElement('table');
-		table.className = 'table table-bordered table-striped';
-	var thead = document.createElement('thead');
-	var tbody = document.createElement('tbody');
-	var tr, th, td;
+    var peopleTemplate = _.template(document.getElementById('cinemaTemplate').innerHTML);
 
-	//render header ot table
-	if(cinema.peopleCollection[0]) {
-		tr = document.createElement('tr');
-		for(var i in cinema.peopleCollection[0]) {
-			th = document.createElement('th');
-			th.innerHTML = '<th>' + i + '</th>';
-			tr.appendChild(th);
-			thead.appendChild(tr);
-		}
-	}
+    var peoplesObjData = JSON.parse(peoplesData);
 
-	//render body
-	for(var x = 0; x < cinema.peopleCollection.length ; x++) {
-			tr = document.createElement('tr');
-			
-			for ( var key in cinema.peopleCollection[x]) {
-				td = document.createElement('td');
-				td.innerHTML = '<td>' +  cinema.peopleCollection[x][key] + '</td>';
-				tr.appendChild(td);	
-			}
-      tbody.appendChild(tr);
-	}
-				
-				
-	//render table
-	table.appendChild(thead);
-	table.appendChild(tbody);
-	document.getElementById('peoples').appendChild(table);
+    var resultingHtml = peopleTemplate({peoples : peoplesObjData});
+
+    document.getElementById('peoplesTable').tBodies[0].innerHTML = resultingHtml;
 };
 
 cinema.render = function() {

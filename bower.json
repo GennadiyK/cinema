@@ -1,0 +1,22 @@
+{
+  "name": "cinema",
+  "version": "0.0.0",
+  "homepage": "https://github.com/GennadiyK/cinema",
+  "authors": [
+    "Henadzi Kalinouski <7742589@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "underscore": "~1.8.3"
+  },
+  "devDependencies": {
+    "underscore": "~1.8.3"
+  }
+}

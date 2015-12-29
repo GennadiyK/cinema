@@ -4,10 +4,36 @@
 	<meta charset="UTF-8">
 	<title>Document</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<script src="lib/underscore/underscore-min.js"></script>
 </head>
 <body>
-	<div id="peoples" class="container-fluid"></div>
-	<script src="js/peoples.js"></script>
-	<script src="js/cinema.js"></script>
+<div id="peoples" class="container-fluid">
+    <table id="peoplesTable" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>id</th><th>name</th><th>photo</th><th>visit</th><th>personal</th><th>date</th>
+            </tr>
+            </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+  <script type="text/template" id="cinemaTemplate">
+        <% _.each(peoples, function(items){ %>
+            <tr>
+                <td><%= items.id %></td>
+                <td><%= items.name %></td>
+                <td><%= items.photo %></td>
+                <td><%= items.visit %></td>
+                <td><%= items.personal %></td>
+                <td><%= items.date %></td>
+            </tr>
+        <% }); %>
+  </script>
+
+  <script src="js/peoples.js"></script>
+  <script src="js/templating.js"></script>
+  <!--<script src="js/cinema.js"></script>-->
 </body>
 </html>

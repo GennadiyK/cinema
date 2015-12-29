@@ -9,8 +9,6 @@ cinema.People = function(id, name, photo) {
 	this.date = "00-00-0000";
 };
 
-
-
 cinema.peopleCollection = JSON.parse(peoplesData);
 
 
@@ -29,7 +27,8 @@ cinema.cameraListener = function(id) {
 	}
 };
 
-cinema.renderPeople = function() {
+
+cinema.peopleCollectionView = function() {
 	var table = document.createElement('table');
 		table.className = 'table table-bordered table-striped';
 	var thead = document.createElement('thead');
@@ -56,7 +55,7 @@ cinema.renderPeople = function() {
 				td.innerHTML = '<td>' +  cinema.peopleCollection[x][key] + '</td>';
 				tr.appendChild(td);	
 			}
-		tbody.appendChild(tr);
+      tbody.appendChild(tr);
 	}
 				
 				
@@ -64,7 +63,10 @@ cinema.renderPeople = function() {
 	table.appendChild(thead);
 	table.appendChild(tbody);
 	document.getElementById('peoples').appendChild(table);
-
 };
 
-cinema.renderPeople();
+cinema.render = function() {
+	cinema.peopleCollectionView();
+};
+
+cinema.render();

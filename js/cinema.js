@@ -29,13 +29,19 @@ cinema.cameraListener = function(id) {
 
 
 cinema.peopleCollectionView = function() {
-    var peopleTemplate = _.template(document.getElementById('cinemaTemplate').innerHTML);
+    var peopleTemplate = document.getElementById('cinemaTemplate').innerHTML;
+    var peopleTemplateData = JSON.parse(peoplesData);
 
-    var peoplesObjData = JSON.parse(peoplesData);
+    for(var i = 0; i < peopleTemplateData.length; i++ ) {
+        var tr = peopleTemplate;
 
-    var resultingHtml = peopleTemplate({peoples : peoplesObjData});
+        for( var key in peopleTemplateData[i]) {
+            var html = tr.replace(new RegExp('\{' + key + '\}', 'gi'), peopleTemplateData[i][key]);
+        }
+        document.getElementById('peoplesTable').tBodies[0].innerHTML = html;
+    }
 
-    document.getElementById('peoplesTable').tBodies[0].innerHTML = resultingHtml;
+
 };
 
 cinema.render = function() {

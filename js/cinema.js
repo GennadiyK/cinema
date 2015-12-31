@@ -33,16 +33,32 @@ cinema.peopleCollectionView = function() {
     var peopleTemplateData = JSON.parse(peoplesData);
 
     for(var i = 0; i < peopleTemplateData.length; i++ ) {
-        var tr = peopleTemplate;
+        var tr = document.createElement('tr');
+        var  trContent = peopleTemplate;
 
         for( var key in peopleTemplateData[i]) {
-            var html = tr.replace(new RegExp('\{' + key + '\}', 'gi'), peopleTemplateData[i][key]);
+            trContent = trContent.replace(new RegExp('\{' + key + '\}', 'gi'), peopleTemplateData[i][key]);
+            tr.innerHTML = trContent;
+
         }
-        document.getElementById('peoplesTable').tBodies[0].innerHTML = html;
+
+        document.getElementById('peoplesTable').tBodies[0].appendChild(tr);
     }
-
-
 };
+
+
+cinema.template = function(htmlText){
+    var range = document.createRange();
+    var container = range.createContextualFragment('<div></div>');
+
+    range.selectNode(document.body); // required in Safari
+
+    var firstNode = container.firstChild;
+
+    firstNode.innerHTML = htmlText;
+
+    return container.firstChild;
+}
 
 cinema.render = function() {
 	cinema.peopleCollectionView();

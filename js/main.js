@@ -16,25 +16,54 @@ cinema.VisitorView = function(model, templateId) {
 
 
     this.editData = function(field, fieldLabel) {
+        var inputContainer = document.createElement('div');
+            inputContainer.setAttribute('class','input-group');
         var inputField = document.createElement('input');
             inputField.setAttribute('class','form-control');
-        var fieldValue;
-            if(fieldLabel == 'name') {
-                fieldValue = model.name;
-                inputField.value = fieldValue;
-            }
+        var cancelButton = document.createElement('button');
+            cancelButton.setAttribute('class', 'btn btn-danger');
+            cancelButton.innerHTML = 'cancel';
+        var btnContainer = document.createElement('div');
+            btnContainer.setAttribute('class','input-group-btn');
+            btnContainer.appendChild(cancelButton);
+
+        var fieldValue, newValue;
+
+
+
+        if(fieldLabel == 'name') {
+            fieldValue = model.name;
+        }
+
+        inputField.value = fieldValue;
 
         field.innerHTML = '';
-        field.appendChild(inputField);
+        inputContainer.appendChild(inputField);
+        inputContainer.appendChild(btnContainer);
+
+        field.appendChild(inputContainer);
+
         inputField.focus();
 
+
+
+        cancelButton.addEventListener('click', function(){
+            inputField.value = fieldValue;
+        });
+
         inputField.addEventListener('change', function(){
-            model.name = inputField.value;
+            newValue = inputField.value;
         });
 
         inputField.addEventListener('blur', function(){
-            field.innerHTML = inputField.value;
+            field.innerHTML = fieldValue;
+
+            if(newValue) {
+                field.innerHTML = newValue;
+            }
+
         });
+
     };
 
     this.eventListener = function(parent) {

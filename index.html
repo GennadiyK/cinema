@@ -9,18 +9,25 @@
 <div id="peoples" class="container-fluid">
     <table id="peoplesTable" class="table table-bordered table-striped">
             <thead>
-            <tr>
-                <th>id</th><th>name</th><th>photo</th><th>visit</th><th>personal</th><th>date</th>
-            </tr>
+                <tr>
+                    <th>id</th><th>name</th><th>photo</th><th>visit</th><th>personal</th><th>date</th>
+                </tr>
             </thead>
         <tbody>
         </tbody>
     </table>
 </div>
 
-  <script type="text/template" id="cinemaTemplate"><tr><td>{id}</td><td>{name}</td><td>{photo}</td><td>{visit}</td><td>{personal}</td><td>{date}</td></tr></script>
+  <script type="text/template" id="cinemaTemplate">
+          <td>{id}</td>
+          <td data-field="edit">{name}</td>
+          <td>{photo}</td>
+          <td>{visit}</td>
+          <td>{personal}</td>
+          <td>{date}</td>
+  </script>
 
   <script src="js/peoples.js"></script>
-  <script src="js/cinema.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

@@ -1,19 +1,49 @@
 var cinema = cinema || {};
 
-cinema.Visitor = function(name, id, photo) {
-    this.id = id;
-    this.name = name;
-    this.photo = photo;
-    this.visit = 0;
-    this.personal = 0;
-    this.date = "00-00-0000";
+//cinema.Visitor = function(name, id, photo) {
+//    this.id = id;
+//    this.name = name;
+//    this.photo = photo;
+//    this.visit = 0;
+//    this.personal = 0;
+//    this.date = "00-00-0000";
+//};
+
+cinema.modelVisitors = {
+    _data: null,//не изменять извне, только через методы set/get
+    init: function(data) {
+        this.setDataToJSON(data);
+        //проверить что data существует(ошибка) или не существует
+    },
+    getData: function(id, key) {//получаем какое имя пользователя и интересующее свойство
+        //получаем инфу из this._data
+        //getUserById(id)
+    },
+    setData: function(id, key, val) {//при сохранении и проверка на валидность
+        this.getUserById(id)[key] = val;
+        this.onChangeModel(id, key);
+    },
+    getUserById: function(id){
+
+    },
+    setDataToJSON: function(data) {//
+        this._data = data;
+        //передаем инфу и записываем в this._data
+    },
+    onChangeModel: function(){
+
+    }
 };
 
+cinema.modelVisitors.init()
+
 cinema.VisitorView = function(model, templateId) {
+    //для чего View - исходя из это методы вьюшки
+    //метод init render
+    //в init продумать поведение вьющки при  изменения модельки
+
     var model = model;
     var template = document.getElementById(templateId);
-
-
 
     this.editData = function(field, fieldLabel) {
         var inputContainer = document.createElement('div');
@@ -81,14 +111,13 @@ cinema.VisitorView = function(model, templateId) {
         return field.innerHTML = model[key];
     };
 
-
     this.eventListener = function(parent) {
         parent.addEventListener('dblclick', function(e){
             var target = e.target;
             if(target.dataset.field != 'edit') return;
 
             this.editData(target,'name');
-        }.bind(cinema.visitorView));
+        }.bind(this));
     };
 
     this.render = function() {
@@ -104,7 +133,12 @@ cinema.VisitorView = function(model, templateId) {
     };
 };
 
-cinema.visitor = new cinema.Visitor('Vasya',0,'photo');
+cinema.VisitorsView = function(model) {
+    var model = model;
+    var elem = document.createElement('tbody');
+};
 
-cinema.visitorView = new cinema.VisitorView(cinema.visitor, 'cinemaTemplate');
+cinema.visitor = new cinema.Visitor('Vasya',0,'photo');//передать объект с данными
+
+cinema.visitorView = new cinema.VisitorView(cinema.visitor, 'cinemaTemplate');//
 cinema.visitorView.render();

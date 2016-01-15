@@ -10,48 +10,44 @@ var cinema = cinema || {};
 //};
 
 
-
 cinema.modelVisitors = {
-    _data: null,//не изменять извне, только через методы set/get
-    init: function(data) {
-        this.getDataFromJSON(data);
+    _data: null,
+    init: function (data) {
+        this.setDataFromJSON(data);
 
         //проверить что data существует(ошибка) или не существует
     },
-    getData: function(id, key) {//получаем какое имя пользователя и интересующее свойство
-
-
-        for(var val in this._data) {
-            //получаем инфу из this._data
-
-            if(this._data[val]['id'] == id) {
-               return {
-                   id: this._data[val].id,
-                   key: this._data[val][key]
-               }
-           }
+    getData: function (id, key) {//получаем какое имя пользователя и интересующее свойство
+        for (var val in this._data) {
+            if (this._data[val]['id'] == id) {
+                return this._data[val][key];
+            }
         }
     },
-    setData: function(id, key, val) {//при сохранении и проверка на валидность
-        this.getUserById(id)[key] = val;
+    setData: function (id, key, val) {//при сохранении и проверка на валидность
+        this.getVisitorById(id)[key] = val;
         this.onChangeModel(id, key);
     },
-    getVisitorById: function(id){
-        for(var key in this._data) {
-            if(this._data[key]['id'] == id) {
+    getDataList: function(len, page) {
+        var arr = [];
+        for(var i = 0; i < this._data.length && len > 0; i++) {
+            arr.push(this._data[i]);
+            len--;
+        }
+
+        return arr;
+    },
+    getVisitorById: function (id) {
+        for (var key in this._data) {
+            if (this._data[key]['id'] == id) {
                 return this._data[key];
             }
         }
     },
-    getDataFromJSON: function(data) {//
+    setDataFromJSON: function (data) {//
         this._data = JSON.parse(data);
-        //передаем инфу и записываем в this._data
     },
-    setDataToJSON: function(data) {//
-        this._data = JSON.parse(data);
-        //передаем инфу и записываем в this._data
-    },
-    onChangeModel: function(){
+    onChangeModel: function () {
 
     }
 };
@@ -61,34 +57,47 @@ cinema.modelVisitors.init(peoplesData);
 cinema.viewVisitors = {
     //для чего View - исходя из это методы вьюшки
     /*
-    * 1.получать данные из модели
-    * 2.отрисовывать полученные данные в темплэйте
-    * 3. дать возможность пользователю изменить отображаемые данные
-    * 4. сохранить введённые данные и передать их в модель
-    * 5. отменить сохраниение введённых данных
-    * 6.добавить нового пользователя и передать данные в модель
-    * 7. удалить пользователя текущего и передать id удаленного пользователя в модель
-    *
-    * */
+     * 1.получать данные из модели
+     * 2.отрисовывать полученные данные в темплэйте
+     * 3. дать возможность пользователю изменить отображаемые данные
+     * 4. сохранить введённые данные и передать их в модель
+     * 5. отменить сохраниение введённых данных
+     * 6.добавить нового пользователя и передать данные в модель
+     * 7. удалить пользователя текущего и передать id удаленного пользователя в модель
+     *
+     * */
     //метод init render
     //в init продумать поведение вьющки при  изменения модельки
     _template: null,
 
-    init: function(model, templateId) {
+    init: function (model, templateId) {
         this.render(model, templateId);
     },
-    render: function(model, templateId){
-        this.getTemplate(templateId);
+    render: function (model, templateId) {
+        this.fillTemplate(model, templateId);
     },
-    getDataFromModel: function(model) {
-
+    getDataFromModel: function (model) {
+        return model.getDataList(10);
     },
-    getTemplate: function(templateId) {
+    getTemplate: function (templateId) {
         this._template = document.getElementById(templateId);
 
         return this._template.innerHTML;
     },
-    fillTemplate: function() {
+    fillTemplate: function (model, templateId) {
+        var template = this.getTemplate(templateId);
+        var data = this.getDataFromModel(model);
+
+        for(var i = 0; i < data.length; i++) {
+            var row = document.createElement('tr');
+
+            for(var key in data[i]) {
+                template = template.replace(new RegExp('\{\{' + key + '\}\}'), data[i][key]);
+            }
+            
+            row.innerHTML = template;
+            document.getElementById('peoplesTable').tBodies[0].appendChild(row);
+        }
 
     }
 
@@ -183,4 +192,4 @@ cinema.viewVisitors = {
     //};
 };
 
-cinema.viewVisitors.init(cinema.modelVisitors,'cinemaTemplate');
+cinema.viewVisitors.init(cinema.modelVisitors, 'cinemaTemplate');

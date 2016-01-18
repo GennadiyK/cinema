@@ -31,6 +31,7 @@ cinema.modelVisitors = {
     getDataList: function(len, page) {
         var arr = [];
         for(var i = 0; i < this._data.length && len > 0; i++) {
+
             arr.push(this._data[i]);
             len--;
         }
@@ -54,7 +55,48 @@ cinema.modelVisitors = {
 
 cinema.modelVisitors.init(peoplesData);
 
-cinema.viewVisitors = {
+
+cinema.viewVisitor = {
+    _template: null,
+
+    init: function(model, templateId, visitorId, elemId) {
+        this.getTemplate(templateId);
+        this.render(model,visitorId, elemId);
+    },
+
+    render: function(model, visitorId, elemId) {
+        document.getElementById(elemId).tBodies[0].appendChild(this.fillTemplate(model, visitorId));
+    },
+
+    getTemplate: function (templateId) {
+        this._template = document.getElementById(templateId).innerHTML;
+        return this._template;
+    },
+
+    getVisitorFromModel: function(model, id) {
+        return model.getVisitorById(id);
+    },
+
+    fillTemplate: function (model, visitorId) {
+        var template = this._template;
+        var data = this.getVisitorFromModel(model,visitorId);
+        var row = document.createElement('tr');
+
+
+        for(var key in data) {
+            template = template.replace(new RegExp('\{\{' + key + '\}\}'), data[key]);
+        }
+
+        row.innerHTML = template;
+
+        return row;
+    }
+
+};
+
+cinema.viewVisitor.init(cinema.modelVisitors, 'cinemaTemplate', 0, 'peoplesTable');
+
+cinema.viewVisitorCollection = {
     //для чего View - исходя из это методы вьюшки
     /*
      * 1.получать данные из модели
@@ -79,27 +121,23 @@ cinema.viewVisitors = {
     getDataFromModel: function (model) {
         return model.getDataList(10);
     },
-    getTemplate: function (templateId) {
-        this._template = document.getElementById(templateId);
-
-        return this._template.innerHTML;
-    },
-    fillTemplate: function (model, templateId) {
-        var template = this.getTemplate(templateId);
-        var data = this.getDataFromModel(model);
-
-        for(var i = 0; i < data.length; i++) {
-            var row = document.createElement('tr');
-
-            for(var key in data[i]) {
-                template = template.replace(new RegExp('\{\{' + key + '\}\}'), data[i][key]);
-            }
-            
-            row.innerHTML = template;
-            document.getElementById('peoplesTable').tBodies[0].appendChild(row);
-        }
-
-    }
+    //
+    //fillTemplate: function (model) {
+    //    var template;
+    //    var data = this.getDataFromModel(model);
+    //
+    //    for(var i = 0; i < data.length; i++) {
+    //        var row = document.createElement('tr');
+    //        template = this._template;
+    //
+    //        for(var key in data[i]) {
+    //            template = template.replace(new RegExp('\{\{' + key + '\}\}'), data[i][key]);
+    //        }
+    //
+    //        row.innerHTML = template;
+    //        document.getElementById('peoplesTable').tBodies[0].appendChild(row);
+    //    }
+    //}
 
     //var model = model;
     //var template = document.getElementById(templateId);
@@ -192,4 +230,4 @@ cinema.viewVisitors = {
     //};
 };
 
-cinema.viewVisitors.init(cinema.modelVisitors, 'cinemaTemplate');
+//cinema.viewVisitorCollection.init(cinema.modelVisitors);

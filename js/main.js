@@ -52,20 +52,23 @@ cinema.modelVisitors = {
 
     }
 };
-
 cinema.modelVisitors.init(peoplesData);
 
 
 cinema.viewVisitor = {
     _template: null,
+    _model: cinema.modelVisitors,
+    _visitorId: null,
+    _templateId:  'visitorTemplate',
 
-    init: function(model, templateId, visitorId, elemId) {
-        this.getTemplate(templateId);
-        this.render(model,visitorId, elemId);
+    init: function(visitorId) {
+        this._visitorId = visitorId;
+        this.getTemplate(this._templateId);
+        this.getVisitorFromModel(this._visitorId);
     },
 
-    render: function(model, visitorId, elemId) {
-        document.getElementById(elemId).tBodies[0].appendChild(this.fillTemplate(model, visitorId));
+    render: function(elem) {
+        return elem.appendChild(this.fillTemplate(this._visitorId));
     },
 
     getTemplate: function (templateId) {
@@ -73,13 +76,13 @@ cinema.viewVisitor = {
         return this._template;
     },
 
-    getVisitorFromModel: function(model, id) {
-        return model.getVisitorById(id);
+    getVisitorFromModel: function(id) {
+        return this._model.getVisitorById(id);
     },
 
-    fillTemplate: function (model, visitorId) {
+    fillTemplate: function (visitorId) {
         var template = this._template;
-        var data = this.getVisitorFromModel(model,visitorId);
+        var data = this.getVisitorFromModel(visitorId);
         var row = document.createElement('tr');
 
 
@@ -94,140 +97,39 @@ cinema.viewVisitor = {
 
 };
 
-cinema.viewVisitor.init(cinema.modelVisitors, 'cinemaTemplate', 0, 'peoplesTable');
+
+//append(cinema.viewVisitor.init(user[id])); //передавать только id пользователя
 
 cinema.viewVisitorCollection = {
-    //для чего View - исходя из это методы вьюшки
-    /*
-     * 1.получать данные из модели
-     * 2.отрисовывать полученные данные в темплэйте
-     * 3. дать возможность пользователю изменить отображаемые данные
-     * 4. сохранить введённые данные и передать их в модель
-     * 5. отменить сохраниение введённых данных
-     * 6.добавить нового пользователя и передать данные в модель
-     * 7. удалить пользователя текущего и передать id удаленного пользователя в модель
-     *
-     * */
-    //метод init render
-    //в init продумать поведение вьющки при  изменения модельки
+
     _template: null,
+    _model: cinema.modelVisitors,
+    _templateId: 'allVisitorsTemplate',
+    _elem: null,
 
-    init: function (model, templateId) {
-        this.render(model, templateId);
+    init: function () {
+        this.getTemplate(this._templateId);
+        this.render();
     },
-    render: function (model, templateId) {
-        this.fillTemplate(model, templateId);
+    render: function () {
+        this.fillTemplate();
     },
-    getDataFromModel: function (model) {
-        return model.getDataList(10);
+    getTemplate: function (templateId) {
+        this._template = document.getElementById(templateId).innerHTML;
+        return this._template;
     },
-    //
-    //fillTemplate: function (model) {
-    //    var template;
-    //    var data = this.getDataFromModel(model);
-    //
-    //    for(var i = 0; i < data.length; i++) {
-    //        var row = document.createElement('tr');
-    //        template = this._template;
-    //
-    //        for(var key in data[i]) {
-    //            template = template.replace(new RegExp('\{\{' + key + '\}\}'), data[i][key]);
-    //        }
-    //
-    //        row.innerHTML = template;
-    //        document.getElementById('peoplesTable').tBodies[0].appendChild(row);
-    //    }
-    //}
+    fillTemplate: function() {
+        var data = this._model.getDataList(10);
+        
+        this._elem = document.createElement('tbody');
+        for(var i = 0; i < data.length; i++) {
+            cinema.viewVisitor.init(data[i].id);
+            var templateContent = this._elem.appendChild(cinema.viewVisitor.render(this._elem));
+            this._elem.appendChild(templateContent);
+        }
+        document.getElementById('peoples').appendChild(this._elem);
+    }
 
-    //var model = model;
-    //var template = document.getElementById(templateId);
-    //
-    //this.editData = function(field, fieldLabel) {
-    //    var inputContainer = document.createElement('div');
-    //        inputContainer.setAttribute('class','input-group');
-    //    var inputField = document.createElement('input');
-    //        inputField.setAttribute('class','form-control');
-    //    var cancelButton = document.createElement('button');
-    //        cancelButton.setAttribute('class', 'btn btn-danger');
-    //        cancelButton.innerHTML = 'cancel';
-    //    var saveButton = document.createElement('button');
-    //        saveButton.setAttribute('class', 'btn btn-success');
-    //        saveButton.innerHTML = 'save';
-    //    var btnContainer = document.createElement('div');
-    //        btnContainer.setAttribute('class','input-group-btn');
-    //        btnContainer.appendChild(cancelButton);
-    //        btnContainer.appendChild(saveButton);
-    //
-    //    var fieldValue;
-    //
-    //
-    //    //checking label of col
-    //    if(fieldLabel == 'name') {
-    //        fieldValue = model.name;
-    //    }
-    //
-    //    //adding text to value
-    //    inputField.value = fieldValue;
-    //
-    //    //clearing html of col
-    //    field.innerHTML = '';
-    //
-    //    //adding new elements: input and cancel button to the col
-    //    inputContainer.appendChild(inputField);
-    //    inputContainer.appendChild(btnContainer);
-    //    field.appendChild(inputContainer);
-    //
-    //    inputField.focus();
-    //
-    //    //canceling any changing with input value
-    //    cancelButton.addEventListener('click', function(e){
-    //
-    //        e.preventDefault();
-    //        this.cancelEditData(field, fieldValue);
-    //
-    //    }.bind(this));
-    //
-    //    //saving value at the moment of changing
-    //
-    //    saveButton.addEventListener('click', function(e){
-    //
-    //        e.preventDefault();
-    //        if(fieldLabel == 'name') {
-    //            this.saveEditData(inputField, 'name', field);
-    //        }
-    //
-    //    }.bind(this));
-    //};
-    //
-    //this.cancelEditData = function(field, val){
-    //    return field.innerHTML = val;
-    //};
-    //
-    //this.saveEditData = function(input, key, field) {
-    //    model[key] = input.value;
-    //    return field.innerHTML = model[key];
-    //};
-    //
-    //this.eventListener = function(parent) {
-    //    parent.addEventListener('dblclick', function(e){
-    //        var target = e.target;
-    //        if(target.dataset.field != 'edit') return;
-    //
-    //        this.editData(target,'name');
-    //    }.bind(this));
-    //};
-    //
-    //this.render = function() {
-    //    var tr = document.createElement('tr');
-    //    var trContent = template.innerHTML;
-    //    var table = document.getElementById('peoplesTable');
-    //    for(var key in model) {
-    //        trContent = trContent.replace(new RegExp('\{\{' + key + '\}\}'), model[key]);
-    //    }
-    //
-    //    table.tBodies[0].innerHTML = trContent;
-    //    this.eventListener(table);
-    //};
 };
 
-//cinema.viewVisitorCollection.init(cinema.modelVisitors);
+cinema.viewVisitorCollection.init();

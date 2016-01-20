@@ -7,14 +7,12 @@
     <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-<div id="peoples" class="container-fluid">
 
-
-</div>
+<div id="peoples" class="container-fluid"></div>
 
 <script type="text/template" id="visitorTemplate">
       <td>{{id}}</td>
-      <td data-field="edit">{{name}}</td>
+      <td data-field="edit" data-visitor="name">{{name}}</td>
       <td>{{photo}}</td>
       <td>{{visit}}</td>
       <td>{{personal}}</td>
@@ -27,6 +25,7 @@
                 <th>id</th><th>name</th><th>photo</th><th>visit</th><th>personal</th><th>date</th>
             </tr>
         </thead>
+        {{visitorsList}}
     </table>
 </script>
 

@@ -67,8 +67,13 @@ cinema.viewVisitor = {
         this.getVisitorFromModel(this._visitorId);
     },
 
-    render: function(elem) {
-        return elem.appendChild(this.fillTemplate(this._visitorId));
+    render: function(elem) {////////////////////////////
+        var row = this.fillTemplate(this._visitorId);
+        row.addEventListener('click', function(e){
+
+            this.editFieldValue();
+        }.bind(this));
+        return elem.appendChild(row);
     },
 
     getTemplate: function (templateId) {
@@ -91,43 +96,81 @@ cinema.viewVisitor = {
         }
 
         row.innerHTML = template;
-
         return row;
+    },
+    editFieldValue: function(field) {
+
+        var inputContainer = document.createElement('div');
+        inputContainer.setAttribute('class','input-group');
+        var inputField = document.createElement('input');
+        inputField.setAttribute('class','form-control');
+        var cancelButton = document.createElement('button');
+        cancelButton.setAttribute('class', 'btn btn-danger');
+        cancelButton.innerHTML = 'cancel';
+        var saveButton = document.createElement('button');
+        saveButton.setAttribute('class', 'btn btn-success');
+        saveButton.innerHTML = 'save';
+        var btnContainer = document.createElement('div');
+        btnContainer.setAttribute('class','input-group-btn');
+        btnContainer.appendChild(cancelButton);
+        btnContainer.appendChild(saveButton);
+
+        inputContainer.appendChild(inputField);
+
+        inputContainer.appendChild(btnContainer);
+
+
+        field.innerHTML = '';
+
+
+
+        field.appendChild(inputContainer);
+
+        inputField.focus();
+
+
     }
 
 };
 
-
-//append(cinema.viewVisitor.init(user[id])); //передавать только id пользователя
 
 cinema.viewVisitorCollection = {
 
     _template: null,
     _model: cinema.modelVisitors,
     _templateId: 'allVisitorsTemplate',
-    _elem: null,
+    _elem:  document.createElement('tbody'),
+    _container: document.getElementById('peoples'),
+    _visitorData: null,
 
     init: function () {
         this.getTemplate(this._templateId);
+        this._visitorData = this._model.getDataList(10);
         this.render();
     },
     render: function () {
-        this.fillTemplate();
+        this._container.innerHTML = this.fillTemplate();
+
     },
     getTemplate: function (templateId) {
         this._template = document.getElementById(templateId).innerHTML;
         return this._template;
     },
     fillTemplate: function() {
-        var data = this._model.getDataList(10);
-        
-        this._elem = document.createElement('tbody');
-        for(var i = 0; i < data.length; i++) {
-            cinema.viewVisitor.init(data[i].id);
-            var templateContent = this._elem.appendChild(cinema.viewVisitor.render(this._elem));
+
+        var container = document.createElement('div');
+
+        for(var i = 0; i < this._visitorData.length; i++) {
+            cinema.viewVisitor.init(this._visitorData[i].id);
+            var templateContent = cinema.viewVisitor.render(this._elem);
             this._elem.appendChild(templateContent);
         }
-        document.getElementById('peoples').appendChild(this._elem);
+        container.appendChild(this._elem);
+
+        this._template = this._template.replace(new RegExp('\{\{'+'visitorsList'+'\}\}'), container.innerHTML);
+
+
+        return this._template;
     }
 
 };

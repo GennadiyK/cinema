@@ -55,37 +55,36 @@ cinema.modelVisitors = {
 cinema.modelVisitors.init(peoplesData);
 
 
-cinema.viewVisitor = {
-    _template: null,
-    _model: cinema.modelVisitors,
-    _visitorId: null,
-    _templateId:  'visitorTemplate',
+cinema.ViewVisitor = function(visitorId) {
+    var that = this;
+    this._template = null;
+    this._model = cinema.modelVisitors;
+    this._visitorId = visitorId;
+    this._templateId =  'visitorTemplate';
 
-    init: function(visitorId) {
-        this._visitorId = visitorId;
+    this.init =  function() {
+
         this.getTemplate(this._templateId);
         this.getVisitorFromModel(this._visitorId);
-    },
+    };
 
-    render: function(elem) {////////////////////////////
+    this.render = function(elem) {////////////////////////////
         var row = this.fillTemplate(this._visitorId);
-        row.addEventListener('click', function(e){
-
-            this.editFieldValue();
-        }.bind(this));
+        console.log(this._visitorId);
+        this.eventListener(row);
         return elem.appendChild(row);
-    },
+    };
 
-    getTemplate: function (templateId) {
+    this.getTemplate = function (templateId) {
         this._template = document.getElementById(templateId).innerHTML;
         return this._template;
-    },
+    };
 
-    getVisitorFromModel: function(id) {
+    this.getVisitorFromModel = function(id) {
         return this._model.getVisitorById(id);
-    },
+    };
 
-    fillTemplate: function (visitorId) {
+    this.fillTemplate = function (visitorId) {
         var template = this._template;
         var data = this.getVisitorFromModel(visitorId);
         var row = document.createElement('tr');
@@ -96,10 +95,21 @@ cinema.viewVisitor = {
         }
 
         row.innerHTML = template;
-        return row;
-    },
-    editFieldValue: function(field) {
 
+        return row;
+    };
+    this.eventListener = function(row) {
+        var elem =  row.querySelectorAll('td');
+
+        [].forEach.call(elem,function(e){
+            e.addEventListener('dblclick', that.editFieldValue,false)
+        }
+        );
+
+    };
+    this.editFieldValue = function() {
+        var field = this;
+        console.log(field);
         var inputContainer = document.createElement('div');
         inputContainer.setAttribute('class','input-group');
         var inputField = document.createElement('input');
@@ -119,7 +129,7 @@ cinema.viewVisitor = {
 
         inputContainer.appendChild(btnContainer);
 
-
+        //inputField.value = data['name'];
         field.innerHTML = '';
 
 
@@ -128,9 +138,9 @@ cinema.viewVisitor = {
 
         inputField.focus();
 
+    };
 
-    }
-
+    this.init(visitorId);
 };
 
 
@@ -161,8 +171,10 @@ cinema.viewVisitorCollection = {
         var container = document.createElement('div');
 
         for(var i = 0; i < this._visitorData.length; i++) {
-            cinema.viewVisitor.init(this._visitorData[i].id);
-            var templateContent = cinema.viewVisitor.render(this._elem);
+
+
+            var visitor = new cinema.ViewVisitor(this._visitorData[i].id);
+            var templateContent = visitor.render(this._elem);
             this._elem.appendChild(templateContent);
         }
         container.appendChild(this._elem);

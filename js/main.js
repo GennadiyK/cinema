@@ -66,18 +66,40 @@ cinema.ViewVisitor = function(visitorId) {
 
         this.getTemplate(this._templateId);
         this.getVisitorFromModel(this._visitorId);
+
     };
 
-    this.render = function(elem) {////////////////////////////
+    this.render = function() {
         var row = this.fillTemplate(this._visitorId);
-        console.log(this._visitorId);
         this.eventListener(row);
-        return elem.appendChild(row);
+
+        return row;
     };
 
     this.getTemplate = function (templateId) {
         this._template = document.getElementById(templateId).innerHTML;
         return this._template;
+    };
+    this.parseTemplate = function(markup){
+        if (markup.toLowerCase().trim().indexOf('<!doctype') === 0) {
+            var doc = document.implementation.createHTMLDocument("");
+            doc.documentElement.innerHTML = markup;
+            return doc;
+        } else if ('content' in document.createElement('template')) {
+            // Template tag exists!
+            var el = document.createElement('template');
+            el.innerHTML = markup;
+            return el.content;
+        } else {
+            // Template tag doesn't exist!
+            var docfrag = document.createDocumentFragment();
+            var el = document.createElement('body');
+            el.innerHTML = markup;
+            for (i = 0; 0 < el.childNodes.length;) {
+                docfrag.appendChild(el.childNodes[i]);
+            }
+            return docfrag;
+        }
     };
 
     this.getVisitorFromModel = function(id) {
@@ -86,6 +108,7 @@ cinema.ViewVisitor = function(visitorId) {
 
     this.fillTemplate = function (visitorId) {
         var template = this._template;
+
         var data = this.getVisitorFromModel(visitorId);
         var row = document.createElement('tr');
 
@@ -94,22 +117,32 @@ cinema.ViewVisitor = function(visitorId) {
             template = template.replace(new RegExp('\{\{' + key + '\}\}'), data[key]);
         }
 
-        row.innerHTML = template;
+        var templateHTML = this.parseTemplate(template);
+
+        row.appendChild(templateHTML);
 
         return row;
     };
     this.eventListener = function(row) {
-        var elem =  row.querySelectorAll('td');
+        var editFields = row.querySelectorAll('.edit');
 
-        [].forEach.call(elem,function(e){
-            e.addEventListener('dblclick', that.editFieldValue,false)
-        }
-        );
+
+        //block.addEventListener('click', function(){
+        //    alert('sdf');
+        //});
+
+                //var target = e.target;
+                //if(target.dataset.field != 'edit') return;
+                //console.log('sdf');
+                //that.editFieldValue(target);
+
+
+
+
 
     };
-    this.editFieldValue = function() {
-        var field = this;
-        console.log(field);
+    this.editFieldValue = function(field) {
+
         var inputContainer = document.createElement('div');
         inputContainer.setAttribute('class','input-group');
         var inputField = document.createElement('input');
@@ -159,13 +192,37 @@ cinema.viewVisitorCollection = {
         this.render();
     },
     render: function () {
-        this._container.innerHTML = this.fillTemplate();
+        this._container.appendChild(this.fillTemplate());
+
 
     },
     getTemplate: function (templateId) {
         this._template = document.getElementById(templateId).innerHTML;
         return this._template;
     },
+
+    parseTemplate:  function(markup){
+        if (markup.toLowerCase().trim().indexOf('<!doctype') === 0) {
+            var doc = document.implementation.createHTMLDocument("");
+            doc.documentElement.innerHTML = markup;
+            return doc;
+        } else if ('content' in document.createElement('template')) {
+            // Template tag exists!
+            var el = document.createElement('template');
+            el.innerHTML = markup;
+            return el.content;
+        } else {
+            // Template tag doesn't exist!
+            var docfrag = document.createDocumentFragment();
+            var el = document.createElement('body');
+            el.innerHTML = markup;
+            for (i = 0; 0 < el.childNodes.length;) {
+                docfrag.appendChild(el.childNodes[i]);
+            }
+            return docfrag;
+        }
+    },
+
     fillTemplate: function() {
 
         var container = document.createElement('div');
@@ -174,17 +231,24 @@ cinema.viewVisitorCollection = {
 
 
             var visitor = new cinema.ViewVisitor(this._visitorData[i].id);
+
             var templateContent = visitor.render(this._elem);
             this._elem.appendChild(templateContent);
         }
         container.appendChild(this._elem);
+        
 
         this._template = this._template.replace(new RegExp('\{\{'+'visitorsList'+'\}\}'), container.innerHTML);
 
+        var templateHTML =this.parseTemplate(this._template);
 
-        return this._template;
+
+
+        return templateHTML;
     }
 
 };
+
+
 
 cinema.viewVisitorCollection.init();

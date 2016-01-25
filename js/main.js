@@ -2,10 +2,22 @@ var cinema = cinema || {};
 
 cinema.modelVisitors = {
     _data: null,
+    _eventsList:{
+        'reload': [],
+        'change': []
+    },
     init: function (data) {
         this.setDataFromJSON(data);
 
-        //проверить что data существует(ошибка) или не существует
+    },
+    reload: function (data) {
+        this.setDataFromJSON(data);
+        for(var i = 0; i < this._eventsList.reload.length; i++ ) {
+            this._eventsList.reload[i]();
+        }
+    },
+    addEventListener: function(event, func){
+        this._eventsList[event].push(func);
     },
     getData: function (id, key) {//получаем какое имя пользователя и интересующее свойство
         for (var val in this._data) {
@@ -14,9 +26,13 @@ cinema.modelVisitors = {
             }
         }
     },
-    setData: function (id, key, val) {//при сохранении и проверка на валидность
+    setData: function (id, key, val) {
         this.getVisitorById(id)[key] = val;
-        this.onChangeModel(id, key);
+
+        for(var i = 0; i < this._eventsList.change.length; i++ ) {
+            this._eventsList.change[i](id, key, val);
+        }
+
     },
     getDataList: function(len, page) {
         var arr = [];
@@ -36,9 +52,9 @@ cinema.modelVisitors = {
         }
     },
     setDataFromJSON: function (data) {//
-        this._data = JSON.parse(data);
+        this._data = data;
     },
-    onChangeModel: function () {
+    onChangeModel: function (data) {
 
     }
 };
@@ -51,19 +67,25 @@ cinema.ViewVisitor = function(visitorId) {
     this._model = cinema.modelVisitors;
     this._visitorId = visitorId;
     this._templateId =  'visitorTemplate';
+    this._row = null;
 
     this.init =  function() {
 
         this.getTemplate(this._templateId);
         this.getVisitorFromModel(this._visitorId);
+        this._model.addEventListener('change', function(id, key, val) {
+            if(this._visitorId != id) return;
+
+            this.render();
+        }.bind(this));
 
     };
 
     this.render = function() {
-        var row = this.fillTemplate(this._visitorId);
-        this.eventListener(row);
+        this._row = this.fillTemplate(this._visitorId);
+        this.eventListener(this._row);
 
-        return row;
+        return this._row;
     };
 
     this.getTemplate = function (templateId) {
@@ -100,7 +122,12 @@ cinema.ViewVisitor = function(visitorId) {
         var template = this._template;
 
         var data = this.getVisitorFromModel(visitorId);
-        var row = document.createElement('tr');
+
+        if(this._row == null) {
+            this._row = document.createElement('tr');
+        } else {
+            this._row.innerHTML = '';
+        }
 
 
         for(var key in data) {
@@ -109,9 +136,9 @@ cinema.ViewVisitor = function(visitorId) {
 
         var templateHTML = this.parseTemplate(template);
 
-        row.appendChild(templateHTML);
+        this._row.appendChild(templateHTML);
 
-        return row;
+        return this._row;
     };
     this.eventListener = function(row) {
        var editNode = row.querySelectorAll('.edit');
@@ -191,21 +218,23 @@ cinema.viewVisitorCollection = {
     _visitorData: null,
 
     init: function () {
-        this.getTemplate(this._templateId);
-        this._visitorData = this._model.getDataList(10);
         this.render();
-
+        this._model.addEventListener('reload', function(){
+           this.render();
+        }.bind(this));
     },
     render: function () {
+        this.getTemplate(this._templateId);
+        this._visitorData = this._model.getDataList(10);
+        this._container.innerHTML = '';
         this._container.appendChild(this.fillTemplate());
-
-
     },
     getTemplate: function (templateId) {
         var templateHtml;
         var template = document.getElementById(templateId).innerHTML;
         templateHtml = this.parseTemplate(template);
         this._template = templateHtml;
+
         return this._template;
     },
 
@@ -233,13 +262,14 @@ cinema.viewVisitorCollection = {
     },
 
     fillTemplate: function() {
-
+        this._elem.innerHTML = '';
         for(var i = 0; i < this._visitorData.length; i++) {
 
 
             var visitor = new cinema.ViewVisitor(this._visitorData[i].id);
 
             var templateContent = visitor.render(this._elem);
+
             this._elem.appendChild(templateContent);
         }
 

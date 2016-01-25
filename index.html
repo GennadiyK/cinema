@@ -14,7 +14,7 @@
       <td>{{id}}</td>
       <td class="edit" data-visitor="name">{{name}}</td>
       <td>{{photo}}</td>
-      <td>{{visit}}</td>
+      <td data-visitor="visit">{{visit}}</td>
       <td>{{personal}}</td>
       <td>{{date}}</td>
 </script>
@@ -28,10 +28,42 @@
     </table>
 </script>
 
-  <script src="js/peoples.js"></script>
-  <script src="js/main.js"></script>
+<script src="js/peoples.js"></script>
+<script src="js/main.js"></script>
 <script>
 
+    function setRandomData() {
+
+        var randomNum = Math.round((Math.random() * 5));
+        var newVisitor = true;
+
+
+        for(var i = 0; i < peoplesData.length; i++) {
+
+            if(peoplesData[i]['id'] === randomNum) {
+                peoplesData[i]['visit'] += 1;
+                newVisitor = false;
+
+                break;
+            }
+
+        }
+
+        if(newVisitor) {
+
+            peoplesData.push({"id":randomNum,"name":"Name" + randomNum,"photo":"photos/photo-1.png","visit":0,"personal":0,"date":"00-00-0000"});
+            cinema.modelVisitors.reload(peoplesData);
+
+        } else if(peoplesData[randomNum]) {
+
+           peoplesData[randomNum]['visit'] += 1;
+           cinema.modelVisitors.setData(randomNum, 'visit', peoplesData[randomNum]['visit']);
+       }
+
+        setTimeout(setRandomData, 2000);
+    };
+
+    setRandomData();
 </script>
 </body>
 </html>

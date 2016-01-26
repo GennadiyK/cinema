@@ -10,10 +10,15 @@ cinema.modelVisitors = {
         this.setDataFromJSON(data);
 
     },
-    reload: function (data) {
+    reload: function (data) { // получение заново данных, и запуск функций из массива свойства объекта reload
         this.setDataFromJSON(data);
         for(var i = 0; i < this._eventsList.reload.length; i++ ) {
             this._eventsList.reload[i]();
+        }
+    },
+    change: function(id, key, val) { // запускает функции из массива свойства объекта change и передает в функции id key val визитора
+        for(var i = 0; i < this._eventsList.change.length; i++ ) {
+            this._eventsList.change[i](id, key, val);
         }
     },
     addEventListener: function(event, func){
@@ -28,11 +33,7 @@ cinema.modelVisitors = {
     },
     setData: function (id, key, val) {
         this.getVisitorById(id)[key] = val;
-
-        for(var i = 0; i < this._eventsList.change.length; i++ ) {
-            this._eventsList.change[i](id, key, val);
-        }
-
+        this.change(id, key, val);
     },
     getDataList: function(len, page) {
         var arr = [];
@@ -53,9 +54,6 @@ cinema.modelVisitors = {
     },
     setDataFromJSON: function (data) {//
         this._data = data;
-    },
-    onChangeModel: function (data) {
-
     }
 };
 cinema.modelVisitors.init(peoplesData);

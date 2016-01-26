@@ -13,7 +13,7 @@
 <script type="text/template" id="visitorTemplate">
       <td>{{id}}</td>
       <td class="edit" data-visitor="name">{{name}}</td>
-      <td>{{photo}}</td>
+      <td><img src="{{photo}}" alt="" class="photo"></td>
       <td data-visitor="visit">{{visit}}</td>
       <td>{{personal}}</td>
       <td>{{date}}</td>
@@ -36,12 +36,26 @@
 
         var randomNum = Math.round((Math.random() * 5));
         var newVisitor = true;
+        var date = new Date();
+        var VisitTime = function(date) {
+            this.hours = date.getHours();
+            this.minutes = date.getMinutes();
+            this.seconds = date.getSeconds();
+
+            this.showVisitTime = function(){
+                if(this.seconds < 10) {
+                    this.seconds = '0' + this.seconds;
+                }
+                return this.hours + " : " + this.minutes + " : " + this.seconds;
+            }
+        };
+
+        var visitTime = new VisitTime(date);
 
 
         for(var i = 0; i < peoplesData.length; i++) {
 
             if(peoplesData[i]['id'] === randomNum) {
-                peoplesData[i]['visit'] += 1;
                 newVisitor = false;
 
                 break;
@@ -51,13 +65,14 @@
 
         if(newVisitor) {
 
-            peoplesData.push({"id":randomNum,"name":"Name" + randomNum,"photo":"photos/photo-1.png","visit":0,"personal":0,"date":"00-00-0000"});
+            peoplesData.push({"id":randomNum,"name":"Name" + randomNum,"photo":"photos/photo.png","visit":0,"personal":0,"date": visitTime.showVisitTime()});
             cinema.modelVisitors.reload(peoplesData);
 
         } else if(peoplesData[randomNum]) {
 
-           peoplesData[randomNum]['visit'] += 1;
-           cinema.modelVisitors.setData(randomNum, 'visit', peoplesData[randomNum]['visit']);
+            peoplesData[randomNum]['visit']++;
+            cinema.modelVisitors.setData(randomNum, 'visit', peoplesData[randomNum]['visit']);
+            cinema.modelVisitors.setData(randomNum, 'date', visitTime.showVisitTime());
        }
 
         setTimeout(setRandomData, 2000);

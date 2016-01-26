@@ -23,7 +23,7 @@ cinema.cameraListener = function(id) {
 	if(people) {
 		people.visit++;
 	} else {
-		this.addPeople(cinema.peopleCollection,'newName','photo/newPhoto.png');
+		this.addPeople(cinema.peopleCollection,'newName','photos/newPhoto.png');
 	}
 };
 

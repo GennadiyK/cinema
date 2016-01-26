@@ -1,3 +1,10 @@
 table td:nth-child(2) {
     width: 300px;
 }
+
+.photo {
+    max-width: 100px;
+    margin: 0 auto;
+    display: block;
+    opacity: 0.5;
+}

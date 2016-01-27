@@ -206,7 +206,7 @@ cinema.ViewVisitor = function(visitorId) {
     this.init(visitorId);
 };
 
-cinema.viewChenging = {
+cinema.viewChanging = {
     _elem: document.getElementById('alert'),
     _model: cinema.modelVisitors,
     _visitor: null,

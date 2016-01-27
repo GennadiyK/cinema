@@ -105,7 +105,7 @@ cinema.ViewVisitor = function(visitorId) {
             var docfrag = document.createDocumentFragment();
             var el = document.createElement('body');
             el.innerHTML = markup;
-            for (i = 0; 0 < el.childNodes.length;) {
+            for (var i = 0; 0 < el.childNodes.length;) {
                 docfrag.appendChild(el.childNodes[i]);
             }
             return docfrag;
@@ -206,6 +206,32 @@ cinema.ViewVisitor = function(visitorId) {
     this.init(visitorId);
 };
 
+cinema.viewChenging = {
+    _elem: document.getElementById('alert'),
+    _model: cinema.modelVisitors,
+    _visitor: null,
+
+    init: function(id) {
+        this._visitor = this._model.getVisitorById(id);
+        this.render();
+    },
+    render: function() {
+        this.change();
+        this.reload();
+    },
+    change: function() {
+        this._model.addEventListener('change', function(){
+            this._elem.innerHTML = 'We have visitor ' + this._visitor['name'] + ', количество посещений ' + this._visitor['visit'] + ', время визита: ' + this._visitor['date'] ;
+        }.bind(this));
+    },
+    reload: function() {
+        this._model.addEventListener('reload', function(){
+            this._elem.innerHTML = 'We have visitor ' + this._visitor['name'] + ', количество посещений ' + this._visitor['visit'] + ', время визита: ' + this._visitor['date'] ;
+        }.bind(this));
+    }
+
+
+};
 
 cinema.viewVisitorCollection = {
     _template: null,
@@ -280,6 +306,5 @@ cinema.viewVisitorCollection = {
 
 };
 
-
-
 cinema.viewVisitorCollection.init();
+

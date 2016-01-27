@@ -4,7 +4,8 @@ cinema.modelVisitors = {
     _data: null,
     _eventsList:{
         'reload': [],
-        'change': []
+        'change': [],
+        'addNewVisitor': []
     },
     init: function (data) {
         this.setDataFromJSON(data);
@@ -19,6 +20,12 @@ cinema.modelVisitors = {
     change: function(id, key, val) { // запускает функции из массива свойства объекта change и передает в функции id key val визитора
         for(var i = 0; i < this._eventsList.change.length; i++ ) {
             this._eventsList.change[i](id, key, val);
+        }
+    },
+    addNewVisitor: function(visitor) {
+        this._data.push(visitor);
+        for(var i = 0; i < this._eventsList.addNewVisitor.length; i++ ) {
+            this._eventsList.addNewVisitor[i](visitor['id']);
         }
     },
     addEventListener: function(event, func){
@@ -208,28 +215,27 @@ cinema.ViewVisitor = function(visitorId) {
 
 cinema.viewChanging = {
     _elem: document.getElementById('alert'),
-    _model: cinema.modelVisitors,
-    _visitor: null,
 
-    init: function(id) {
-        this._visitor = this._model.getVisitorById(id);
-        this.render();
+    init: function() {
+        this.change(cinema.modelVisitors);
+        this.newVisitor(cinema.modelVisitors);
     },
-    render: function() {
-        this.change();
-        this.reload();
+    render: function(data) {
+        this._elem.innerHTML = data;
     },
-    change: function() {
-        this._model.addEventListener('change', function(){
-            this._elem.innerHTML = 'We have visitor ' + this._visitor['name'] + ', количество посещений ' + this._visitor['visit'] + ', время визита: ' + this._visitor['date'] ;
+    change: function(model) {
+        model.addEventListener('change', function(id, key, val){
+            if(key == 'visit') {
+                this.render('We have visitor: ' + model.getData(id,'name')  + ' visits: ' + model.getData(id,'visit') + ' date' + model.getData(id,'date'));
+            }
         }.bind(this));
+
     },
-    reload: function() {
-        this._model.addEventListener('reload', function(){
-            this._elem.innerHTML = 'We have visitor ' + this._visitor['name'] + ', количество посещений ' + this._visitor['visit'] + ', время визита: ' + this._visitor['date'] ;
+    newVisitor: function(model) {
+        model.addEventListener('addNewVisitor', function(id){
+            this.render('We have new visitor: ' + model.getData(id,'name')  + ' visits: ' + model.getData(id,'visit') + ' date' + model.getData(id,'date'));
         }.bind(this));
     }
-
 
 };
 
@@ -243,7 +249,7 @@ cinema.viewVisitorCollection = {
 
     init: function () {
         this.render();
-        this._model.addEventListener('reload', function(){
+        this._model.addEventListener('addNewVisitor', function(){
            this.render();
         }.bind(this));
     },

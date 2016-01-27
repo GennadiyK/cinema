@@ -77,18 +77,19 @@
         }
 
         if(newVisitor) {
+            cinema.modelVisitors.addNewVisitor({"id":randomNum,"name":"Name" + randomNum,"photo":"photos/photo.png","visit":0,"personal":0,"date": visitTime.showVisitTime()});
 
-            peoplesData.push({"id":randomNum,"name":"Name" + randomNum,"photo":"photos/photo.png","visit":0,"personal":0,"date": visitTime.showVisitTime()});
-            cinema.modelVisitors.reload(peoplesData);
         } else if(peoplesData[randomNum]) {
 
             peoplesData[randomNum]['visit']++;
 
             cinema.modelVisitors.setData(randomNum, 'visit', peoplesData[randomNum]['visit']);
+
             cinema.modelVisitors.setData(randomNum, 'date', visitTime.showVisitTime());
+
         }
 
-        cinema.viewChanging.init(randomNum);
+        cinema.viewChanging.init();
 
         setTimeout(setRandomData, 2000);
     };

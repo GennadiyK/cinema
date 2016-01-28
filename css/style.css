@@ -8,3 +8,7 @@ table td:nth-child(2) {
     display: block;
     opacity: 0.5;
 }
+
+.alert {
+    min-height: 120px;
+}

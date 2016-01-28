@@ -226,14 +226,14 @@ cinema.viewChanging = {
     change: function(model) {
         model.addEventListener('change', function(id, key, val){
             if(key === 'visit') {
-                this.render('We have visitor: ' + model.getData(id,'name')  + ' visits: ' + model.getData(id,'visit') + ', date of visit: ' + model.getData(id,'date'));
+                this.render('We have visitor: ' + model.getData(id,'name')  + '<br>' + ' Visits: ' + model.getData(id,'visit') + '<br>' + 'Date of visit: ' + model.getData(id,'date'));
             }
         }.bind(this));
 
     },
     newVisitor: function(model) {
         model.addEventListener('addNewVisitor', function(id){
-            this.render('We have new visitor: ' + model.getData(id,'name')  + ' visits: ' + model.getData(id,'visit') + ', date of visit: ' + model.getData(id,'date'));
+            this.render('We have new visitor: ' + model.getData(id,'name') + '<br>'  + ' Visits: ' + model.getData(id,'visit') + '<br>' +'Date of visit: ' + model.getData(id,'date'));
         }.bind(this));
     }
 

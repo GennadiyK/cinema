@@ -19,6 +19,16 @@ cinema.modelFilms = {
                 }
             }
         }
+    },
+
+    getDataList: function(len) {
+        var arr = [];
+
+        for(var i = 0; i < this._data.length && len > 0; i++) {
+            arr.push(this._data[i]);
+            len--;
+        }
+        return arr;
     }
 };
 
@@ -38,11 +48,11 @@ cinema.ViewFilm = function(filmId) {
     };
 
     this.render = function() {
-        this.fillTemplate(this._filmId);
+        return this.fillTemplate(this._filmId);
     };
 
-    this.getTemplate = function(id){
-        this._template = document.getElementById(id).innerHTML;
+    this.getTemplate = function(templateId){
+        this._template = document.getElementById(templateId).innerHTML;
 
         return this._template;
     };
@@ -75,6 +85,7 @@ cinema.ViewFilm = function(filmId) {
         var templateHTML;
 
         this._row = document.createElement('li');
+        this._row.className = 'list-group-item';
 
         for(var key in film) {
             template = template.replace( new RegExp('\{\{' + key + '\}\}'), film[key]);
@@ -88,6 +99,30 @@ cinema.ViewFilm = function(filmId) {
 
 };
 
-var viewFilm = new cinema.ViewFilm(1);
+cinema.viewFilmCollection = {
+    _elem: document.createElement('ul'),
+    _container: document.getElementById('films'),
+    _filmData: null,
 
-viewFilm.init();
+    init: function() {
+        this._elem.className = 'list-group';
+        this._filmData = cinema.modelFilms.getDataList(10);
+        this.render();
+
+    },
+
+    render: function() {
+        for(var i = 0; i < this._filmData.length; i++){
+            var filmsList = new cinema.ViewFilm(i);
+                filmsList.init();
+            this._elem.appendChild(filmsList.render());
+        }
+        this._container.appendChild(this._elem);
+    }
+
+}
+
+
+cinema.viewFilmCollection.init();
+
+

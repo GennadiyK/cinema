@@ -293,12 +293,13 @@ cinema.viewVisitorCollection = {
 
     fillTemplate: function() {
         this._elem.innerHTML = '';
+
         for(var i = 0; i < this._visitorData.length; i++) {
 
 
             var visitor = new cinema.ViewVisitor(this._visitorData[i].id);
 
-            var templateContent = visitor.render(this._elem);
+            var templateContent = visitor.render();
 
             this._elem.appendChild(templateContent);
         }

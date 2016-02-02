@@ -23,6 +23,12 @@
 
                 </div>
             </div>
+            <div class="panel panel-info">
+                <div class="panel-heading"><h4>Sessions</h4></div>
+                <div class="panel-body" id="sessions">
+
+                </div>
+            </div>
         </div>
         <div class="col-xs-9">
             <div id="peoples"></div>
@@ -31,7 +37,7 @@
 </div>
 
 
-
+<!-- visitor template -->
 <script type="text/template" id="visitorTemplate">
       <td>{{id}}</td>
       <td class="edit" data-visitor="name">{{name}}</td>
@@ -40,6 +46,9 @@
       <td>{{personal}}</td>
       <td>{{date}}</td>
 </script>
+<!-- END visitor template -->
+
+<!-- template of visitors collection -->
 <script type="text/template" id="allVisitorsTemplate">
     <table class="table table-bordered table-striped">
         <thead>
@@ -49,12 +58,27 @@
         </thead>
     </table>
 </script>
+<!-- END template of visitors collection -->
+
+<!--film template -->
 <script type="text/template" id="filmTemplate">
     <h4>{{id}} <small>{{filmName}}</small></h4>
+</script>
+<!--END film template -->
+
+<!-- session template -->
+<script type="text/template" id="sessionTemplate">
+    <tr>
+        <td>{{id}}</td>
+        <td>{{time}}</td>
+        <td>{{filmId}}</td>
+        <td>{{places}}</td>
+    </tr>
 </script>
 
 <script src="js/peoplesData.js"></script>
 <script src="js/filmsData.js"></script>
+<script src="js/sessionData.js"></script>
 <script src="js/visitors.js"></script>
 <script src="js/films.js"></script>
 <script src="js/session.js"></script>

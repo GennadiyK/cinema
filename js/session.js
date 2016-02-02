@@ -1,31 +1,70 @@
-var Session = function(id, time, idFilm, place) {
-    var placeArr = [];
+var cinema = cinema || {};
 
-    this.id = id;
-    this.time = time;
-    this.idFilm = idFilm;
-    this.place = place;
+cinema.sessionModel = {
+    _data: null,
 
-    this.setPlaceArr = function(x, y) {
-      for(var i = 0; i < x; i++) {
+    init: function(data) {
+        this.setDataFromJson(data);
+    },
 
-          placeArr[i] = [];
-
-          for(var n = 0; n < y; n++) {
-              placeArr[i][n] = 0;
-
-          }
-      }
-        return placeArr;
-    };
-
-    this.getSessionPlace = function(numRow, numPlace){
-        return placeArr[numRow][numPlace];
-    };
+    setDataFromJson: function(data) {
+        this._data = data;
+    }
 };
 
-var session = new Session(1, '13:00', 10, 2);
+cinema.sessionModel.init(sessionData);
 
-session.setPlaceArr(4, 4);
+cinema.ViewSession = function(sessionId) {
+    this._template = null;
+    this._model = cinema.sessionModel;
+    this._templateId = 'sessionTemplate';
+    this._sessionId = sessionId;
+
+    this.init = function() {
+        this.getTemplate(this._templateId);
+        this.render();
+    };
+
+    this.render = function() {
+        this.fillTemplate(this._sessionId);
+    };
+
+    this.getTemplate = function(templateId) {
+        this._template = document.getElementById(templateId).innerHTML;
+        return this._template;
+    };
+
+    this.parseTemplate = function(markup){
+        if (markup.toLowerCase().trim().indexOf('<!doctype') === 0) {
+            var doc = document.implementation.createHTMLDocument("");
+            doc.documentElement.innerHTML = markup;
+            return doc;
+        } else if ('content' in document.createElement('template')) {
+            // Template tag exists!
+            var el = document.createElement('template');
+            el.innerHTML = markup;
+            return el.content;
+        } else {
+            // Template tag doesn't exist!
+            var docfrag = document.createDocumentFragment();
+            var el = document.createElement('body');
+            el.innerHTML = markup;
+            for (var i = 0; 0 < el.childNodes.length;) {
+                docfrag.appendChild(el.childNodes[i]);
+            }
+            return docfrag;
+        }
+    };
+
+    this.fillTemplate = function(id) {
+
+    }
+};
+
+
+
+
+
+
 
 

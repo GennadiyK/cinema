@@ -30,18 +30,27 @@ cinema.ViewSession = function(sessionId) {
     this._model = cinema.sessionModel;
     this._templateId = 'sessionTemplate';
     this._sessionId = sessionId;
+    this._row = null;
 
     this.init = function() {
         this.getTemplate(this._templateId);
     };
 
     this.render = function() {
-      return this.fillTemplate(this._sessionId);
+        this._row = this.fillTemplate(this._sessionId);
+        return this._row;
     };
 
     this.getTemplate = function(templateId) {
         this._template = document.getElementById(templateId).innerHTML;
         return this._template;
+    };
+
+    this.changeIdFilmOnName = function(id) {
+        var session = this._model.getSessionById(id);
+        var film = cinema.modelFilms.getFilmById(session['filmId']);
+
+        return film['filmName'];
     };
 
     this.parseTemplate = function(markup){
@@ -75,19 +84,22 @@ cinema.ViewSession = function(sessionId) {
             if(key === 'places') {
                 var container = document.createElement('div');
                 var table = document.createElement('table');
-                    table.className = 'placesTable table table-bordered table-striped';
+                    table.className = 'placesTable table table-responsive';
                 var tbody = document.createElement('tbody');
                     table.appendChild(tbody);
                 for(var x = 0; x < 11; x++) {
                     var tr = document.createElement('tr');
                     for(var y = 0; y < 11; y++) {
-
                         var td = document.createElement('td');
-                        if(x == 0) {
+
+                        if(x == 0 ) {
                             td.innerHTML = y;
-                        }
-                        if(y == 0) {
+
+                        } else if(y == 0) {
                             td.innerHTML = x;
+
+                        } else {
+                            td.innerHTML = x + ":" + y;
                         }
                         tr.appendChild(td);
                     }
@@ -95,11 +107,21 @@ cinema.ViewSession = function(sessionId) {
                 }
                 container.appendChild(table);
                 session[key] = container.innerHTML;
+            }else if(key === 'filmId') {
+                session[key] = this.changeIdFilmOnName(session[key]);
             }
             template = template.replace(new RegExp('\{\{' + key + '\}\}'), session[key]);
         }
+
         templateHTML = this.parseTemplate(template);
         return templateHTML;
+    }
+
+    this.choosePlace = function() {
+
+        this._row.addEventListener('click', function(e){
+           alert(e);
+        });
     }
 };
 
@@ -107,7 +129,7 @@ var viewSession = new cinema.ViewSession(0);
 viewSession.init();
 document.getElementById('sessions').tBodies[0].appendChild(viewSession.render());
 
-
+viewSession.choosePlace();
 
 
 

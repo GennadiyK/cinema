@@ -12,3 +12,42 @@ table td:nth-child(2) {
 .alert {
     min-height: 120px;
 }
+
+.table>tbody>tr>td {
+    width:auto;
+}
+
+.placesTable>tbody>tr>td{
+    padding: 0;
+    width: 10px;
+    height: 10px;
+    font-size: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.placesTable td {
+    color: transparent;
+}
+
+.placesTable tr:first-child td,
+.placesTable td:first-child {
+    color: #000;
+}
+
+
+
+.placesTable td:hover {
+    background: #ccc;
+    color: #000;
+    cursor: default;
+}
+
+.placesTable tr:first-child td:hover,
+.placesTable td:first-child:hover {
+    background: transparent;
+    color: #000;
+}
+
+
+

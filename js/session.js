@@ -20,6 +20,16 @@ cinema.sessionModel = {
             }
         }
 
+    },
+
+    setData: function(id, key, val){
+
+        if(this.getSessionById(id)['places']) {
+            this.getSessionById(id)[key][val] = 1;
+
+        } else {
+            this.getSessionById(id)[key] = val;
+        }
     }
 };
 
@@ -38,6 +48,7 @@ cinema.ViewSession = function(sessionId) {
 
     this.render = function() {
         this._row = this.fillTemplate(this._sessionId);
+        this.eventListener(this._row);
         return this._row;
     };
 
@@ -100,28 +111,45 @@ cinema.ViewSession = function(sessionId) {
 
                         } else {
                             td.innerHTML = x + ":" + y;
+                            td.dataset.place = x + ":" + y;
                         }
                         tr.appendChild(td);
                     }
                     table.tBodies[0].appendChild(tr);
                 }
                 container.appendChild(table);
-                session[key] = container.innerHTML;
+                //session[key] = container.innerHTML;
+                template = template.replace(new RegExp('\{\{' + key + '\}\}'), container.innerHTML);
+
             }else if(key === 'filmId') {
-                session[key] = this.changeIdFilmOnName(session[key]);
+                var title = this.changeIdFilmOnName(session[key]);
+                template = template.replace(new RegExp('\{\{' + key + '\}\}'), title);
+            } else {
+                template = template.replace(new RegExp('\{\{' + key + '\}\}'), session[key]);
             }
-            template = template.replace(new RegExp('\{\{' + key + '\}\}'), session[key]);
         }
 
         templateHTML = this.parseTemplate(template);
         return templateHTML;
-    }
+    };
 
-    this.choosePlace = function() {
+    this.eventListener = function(row) {
+        var tdCollection = row.querySelectorAll('td');
+        var td = [].slice.call(tdCollection);
 
-        this._row.addEventListener('click', function(e){
-           alert(e);
-        });
+
+        for(var i = 0; i < td.length; i++) {
+            td[i].addEventListener('click', function(e){
+                var elem = e.target;
+                if(!elem.dataset.place) return;
+                elem.className = 'choose';
+
+                this._model.setData(this._sessionId, 'places', elem.dataset.place);
+                console.log(this._model.getSessionById(this._sessionId));
+
+            }.bind(this));
+
+        }
     }
 };
 
@@ -129,7 +157,7 @@ var viewSession = new cinema.ViewSession(0);
 viewSession.init();
 document.getElementById('sessions').tBodies[0].appendChild(viewSession.render());
 
-viewSession.choosePlace();
+
 
 
 

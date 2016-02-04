@@ -49,5 +49,9 @@ table td:nth-child(2) {
     color: #000;
 }
 
+.placesTable td.choose {
+    background: lightgreen;
+    color: #000;
+}
 
 

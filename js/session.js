@@ -46,14 +46,15 @@ cinema.ViewSession = function(sessionId) {
     this._sessionId = sessionId;
     this._row = null;
     this._placesTable = null;
+
     this.init = function() {
         this.getTemplate(this._templateId);
     };
 
     this.render = function() {
-
         this._row = this.fillTemplate(this._sessionId);
         this.eventListener(this._row);
+
         return this._row;
     };
 
@@ -142,15 +143,8 @@ cinema.ViewSession = function(sessionId) {
     };
 
     this.eventListener = function(row) {
-
-        var btn = row.querySelectorAll('.btnShowPlaces');
-        var showBtnArr = [].slice.call(btn);
-        showBtnArr[0].addEventListener('click', function(){
-            var modal = document.getElementById('modal');
-                modal.className = modal.className + ' in';
-                modal.style.display = 'block';
-                modal.getElementsByClassName('modal-body')[0].appendChild(this._placesTable);
-        }.bind(this));
+        this.showModal(row);
+        this.closeModal();
         this.choosePlace(this._placesTable);
 
     };
@@ -176,7 +170,43 @@ cinema.ViewSession = function(sessionId) {
         }
     };
 
+    this.showModal = function(row) {
+        var btn = row.querySelectorAll('.btnShowPlaces');
+        var modal = document.getElementById('modal');
+        var modalBg = document.getElementById('modalBg');
 
+        for(var i = 0; i < btn.length; i++) {
+            btn[i].addEventListener('click', function(){
+                modalBg.classList.add('in');
+                modalBg.classList.remove('hidden');
+                modal.classList.add('in');
+                modal.style.display = 'block';
+
+                modal.getElementsByClassName('modal-body')[0].appendChild(this._placesTable);
+
+            }.bind(this));
+        }
+    };
+
+    this.closeModal = function() {
+        var modal = document.getElementById('modal');
+        var modalBg = document.getElementById('modalBg');
+        var span = document.createElement('span');
+
+        modal.addEventListener('click', function(e){
+            e.preventDefault();
+            var elem = e.target;
+            if(!elem.dataset.dismiss) return;
+
+
+            modal.getElementsByClassName('modal-body')[0].innerHTML  = '';
+
+            modal.classList.remove('in');
+            modal.style.display = 'none';
+            modalBg.classList.remove('in');
+            modalBg.classList.add('hidden');
+        }.bind(this));
+    }
 };
 
 var viewSession = new cinema.ViewSession(0);

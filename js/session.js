@@ -49,6 +49,7 @@ cinema.ViewSession = function(sessionId) {
 
     this.init = function() {
         this.getTemplate(this._templateId);
+
     };
 
     this.render = function() {
@@ -93,10 +94,11 @@ cinema.ViewSession = function(sessionId) {
     };
 
     this.fillTemplate = function(id) {
+
         var session = this._model.getSessionById(id);
         var templateHTML;
-
         var template = this._template;
+
         for(var key in session) {
             if(key === 'places') {
                 var container = document.createElement('div');
@@ -174,6 +176,7 @@ cinema.ViewSession = function(sessionId) {
         var btn = row.querySelectorAll('.btnShowPlaces');
         var modal = document.getElementById('modal');
         var modalBg = document.getElementById('modalBg');
+        var placesTable = this._placesTable;
 
         for(var i = 0; i < btn.length; i++) {
             btn[i].addEventListener('click', function(){
@@ -182,7 +185,8 @@ cinema.ViewSession = function(sessionId) {
                 modal.classList.add('in');
                 modal.style.display = 'block';
 
-                modal.getElementsByClassName('modal-body')[0].appendChild(this._placesTable);
+                modal.getElementsByClassName('modal-body')[0].appendChild(placesTable);
+
 
             }.bind(this));
         }
@@ -192,6 +196,8 @@ cinema.ViewSession = function(sessionId) {
         var modal = document.getElementById('modal');
         var modalBg = document.getElementById('modalBg');
         var span = document.createElement('span');
+        var table;
+
 
         modal.addEventListener('click', function(e){
             e.preventDefault();
@@ -199,12 +205,13 @@ cinema.ViewSession = function(sessionId) {
             if(!elem.dataset.dismiss) return;
 
 
-            modal.getElementsByClassName('modal-body')[0].innerHTML  = '';
-
             modal.classList.remove('in');
             modal.style.display = 'none';
             modalBg.classList.remove('in');
             modalBg.classList.add('hidden');
+
+            table = modal.querySelector('.placesTable');
+            table.parentNode.removeChild(table);
         }.bind(this));
     }
 };

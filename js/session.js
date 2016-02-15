@@ -25,7 +25,7 @@ cinema.sessionModel = {
     setData: function(id, key, val){
         var session = this.getSessionById(id);
         if(key === 'places') {
-            if(session[key][val] > 1) {
+            if(session[key][val] == 1) {
                 session[key][val] = 0;
             } else {
                 session[key][val] = 1;
@@ -42,7 +42,7 @@ cinema.sessionModel.init(sessionData);
 cinema.ViewSession = function(sessionId) {
     this._template = null;
     this._model = cinema.sessionModel;
-    this._templateId = 'sessionTemplate2';
+    this._templateId = 'sessionTemplate';
     this._sessionId = sessionId;
     this._row = null;
     this._placesTable = null;
@@ -101,36 +101,11 @@ cinema.ViewSession = function(sessionId) {
 
         for(var key in session) {
             if(key === 'places') {
-                var container = document.createElement('div');
-                var table = document.createElement('table');
-                    table.className = 'placesTable table table-responsive';
-                var tbody = document.createElement('tbody');
-                    table.appendChild(tbody);
-                for(var x = 0; x < 11; x++) {
-                    var tr = document.createElement('tr');
-                    for(var y = 0; y < 11; y++) {
-                        var td = document.createElement('td');
 
-                        if(x == 0 ) {
-                            td.innerHTML = y;
+                var viewPlaces = new cinema.ViewPlaces(this._sessionId);
+                templateHTML = this.parseTemplate(template);
+                templateHTML.querySelector('.places').appendChild(viewPlaces.render());
 
-                        } else if(y == 0) {
-                            td.innerHTML = x;
-
-                        } else {
-                            td.innerHTML = x + ":" + y;
-                            td.dataset.place = x + ":" + y;
-                        }
-                        tr.appendChild(td);
-                    }
-                    table.tBodies[0].appendChild(tr);
-                }
-
-                container.appendChild(table);
-
-
-                template = template.replace(new RegExp('\{\{' + key + '\}\}'), container.innerHTML);
-                this._placesTable = this.parseTemplate(container.innerHTML);
 
             }else if(key === 'filmId') {
                 var title = this.changeIdFilmOnName(session[key]);
@@ -139,37 +114,12 @@ cinema.ViewSession = function(sessionId) {
                 template = template.replace(new RegExp('\{\{' + key + '\}\}'), session[key]);
             }
         }
-
-        templateHTML = this.parseTemplate(template);
         return templateHTML;
     };
 
     this.eventListener = function(row) {
         this.showModal(row);
         this.closeModal();
-        this.choosePlace(this._placesTable);
-
-    };
-
-    this.choosePlace = function(row) {
-        var tdCollection = row.querySelectorAll('td');
-        var td = [].slice.call(tdCollection);
-        var that = this;
-
-
-        for(var i = 0; i < td.length; i++) {
-
-            td[i].addEventListener('click', function(e){
-                e.stopPropagation();
-                var elem = this;
-
-                if(!elem.dataset.place) return;
-
-                elem.classList.toggle('choose');
-
-                that._model.setData(that._sessionId, 'places', elem.dataset.place);
-            });
-        }
     };
 
     this.showModal = function(row) {
@@ -209,11 +159,114 @@ cinema.ViewSession = function(sessionId) {
             modal.style.display = 'none';
             modalBg.classList.remove('in');
             modalBg.classList.add('hidden');
-
+            console.log(this._placesTable);
             table = modal.querySelector('.placesTable');
             table.parentNode.removeChild(table);
         }.bind(this));
     }
+};
+
+cinema.ViewPlaces  = function(id){
+    this._placesTable = null;
+    this._sessionId = id;
+    this._model = cinema.sessionModel;
+
+    this.init = function(){
+       return this;
+    };
+
+    this.render = function(){
+        this.createPlacesTable();
+        this.choosePlace(this._placesTable);
+        return this._placesTable;
+    };
+
+    this.parseTemplate = function(markup){
+        if (markup.toLowerCase().trim().indexOf('<!doctype') === 0) {
+            var doc = document.implementation.createHTMLDocument("");
+            doc.documentElement.innerHTML = markup;
+            return doc;
+        } else if ('content' in document.createElement('template')) {
+            // Template tag exists!
+            var el = document.createElement('template');
+            el.innerHTML = markup;
+            return el.content;
+        } else {
+            // Template tag doesn't exist!
+            var docfrag = document.createDocumentFragment();
+            var el = document.createElement('body');
+            el.innerHTML = markup;
+            for (var i = 0; 0 < el.childNodes.length;) {
+                docfrag.appendChild(el.childNodes[i]);
+            }
+            return docfrag;
+        }
+    };
+
+    this.createPlacesTable = function(){
+        var container = document.createElement('div');
+        var table = document.createElement('table');
+        table.className = 'placesTable table table-responsive';
+        var tbody = document.createElement('tbody');
+        table.appendChild(tbody);
+        for(var x = 0; x < 11; x++) {
+            var tr = document.createElement('tr');
+            for(var y = 0; y < 11; y++) {
+                var td = document.createElement('td');
+
+                if(x == 0 ) {
+                    td.innerHTML = y;
+
+                } else if(y == 0) {
+                    td.innerHTML = x;
+
+                } else {
+                    td.innerHTML = x + ":" + y;
+                    td.dataset.place = x + ":" + y;
+                }
+                tr.appendChild(td);
+            }
+            table.tBodies[0].appendChild(tr);
+        }
+
+        container.appendChild(table);
+
+        this._placesTable = this.parseTemplate(container.innerHTML);
+        this._placesTable = this._placesTable.childNodes[0];
+    };
+
+    this.choosePlace = function(row) {
+        var tdCollection = row.querySelectorAll('td');
+        var td = [].slice.call(tdCollection);
+        var that = this;
+
+
+        for(var i = 0; i < td.length; i++) {
+            td[i].addEventListener('click', function(e){
+
+                e.stopPropagation();
+
+                var elem = this;
+
+                if(!elem.dataset.place) return;
+
+                elem.classList.add('choose');
+                that._model.setData(that._sessionId, 'places', elem.dataset.place);
+
+                
+                //if(!elem.classList.contains('choose')) {
+                //    elem.classList.add('choose');
+                //    that._model.setData(that._sessionId, 'places', elem.dataset.place);
+                //} else {
+                //    elem.classList.remove('choose');
+                //    that._model.setData(that._sessionId, 'places', elem.dataset.place);
+                //}
+
+            });
+        }
+
+    };
+
 };
 
 var viewSession = new cinema.ViewSession(0);

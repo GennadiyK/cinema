@@ -42,13 +42,13 @@ cinema.sessionModel.init(sessionData);
 cinema.ViewSession = function(sessionId) {
     this._template = null;
     this._model = cinema.sessionModel;
-    this._templateId = 'sessionTemplateWithBtn';
+    this._templateId = 'sessionTemplate';
     this._sessionId = sessionId;
     this._row = null;
 
     this.init = function() {
         this.getTemplate(this._templateId);
-
+        this.changingTemplate();
     };
 
     this.render = function() {
@@ -56,6 +56,33 @@ cinema.ViewSession = function(sessionId) {
         this.eventListener(this._row);
 
         return this._row;
+    };
+
+
+    this.changeTemplateId = function(elem) {
+        if(elem.classList.contains('active')) {
+            this._templateId = elem.dataset.template;
+        }
+        return this._templateId;
+    };
+
+    this.changingTemplate = function() {
+        var btn = document.querySelectorAll('.chooseTemplate');
+        var that = this;
+        for(var i = 0; i < btn.length; i++) {
+            btn[i].addEventListener('click', function(e){
+                e.preventDefault();
+                if(this.parentNode.querySelector('.active')){
+                    this.parentNode.querySelector('.active').classList.remove('active');
+                }
+                this.classList.toggle('active');
+
+                that.changeTemplateId(this);
+                that.getTemplate(that._templateId);
+                document.getElementById('sessions').tBodies[0].innerHTML = '';
+                document.getElementById('sessions').tBodies[0].appendChild(that.render());
+            });
+        }
     };
 
     this.getTemplate = function(templateId) {

@@ -42,10 +42,9 @@ cinema.sessionModel.init(sessionData);
 cinema.ViewSession = function(sessionId) {
     this._template = null;
     this._model = cinema.sessionModel;
-    this._templateId = 'sessionTemplate';
+    this._templateId = 'sessionTemplateWithBtn';
     this._sessionId = sessionId;
     this._row = null;
-    this._placesTable = null;
 
     this.init = function() {
         this.getTemplate(this._templateId);
@@ -104,7 +103,9 @@ cinema.ViewSession = function(sessionId) {
 
                 var viewPlaces = new cinema.ViewPlaces(this._sessionId);
                 templateHTML = this.parseTemplate(template);
-                templateHTML.querySelector('.places').appendChild(viewPlaces.render());
+                if(templateHTML.querySelector('.places')) {
+                    templateHTML.querySelector('.places').appendChild(viewPlaces.render());
+                }
 
 
             }else if(key === 'filmId') {
@@ -126,7 +127,7 @@ cinema.ViewSession = function(sessionId) {
         var btn = row.querySelectorAll('.btnShowPlaces');
         var modal = document.getElementById('modal');
         var modalBg = document.getElementById('modalBg');
-        var placesTable = this._placesTable;
+        var viewPlaces = new cinema.ViewPlaces(this._sessionId);
 
         for(var i = 0; i < btn.length; i++) {
             btn[i].addEventListener('click', function(){
@@ -135,8 +136,7 @@ cinema.ViewSession = function(sessionId) {
                 modal.classList.add('in');
                 modal.style.display = 'block';
 
-                modal.getElementsByClassName('modal-body')[0].appendChild(placesTable);
-
+                modal.getElementsByClassName('modal-body')[0].appendChild(viewPlaces.render());
 
             }.bind(this));
         }
@@ -159,7 +159,6 @@ cinema.ViewSession = function(sessionId) {
             modal.style.display = 'none';
             modalBg.classList.remove('in');
             modalBg.classList.add('hidden');
-            console.log(this._placesTable);
             table = modal.querySelector('.placesTable');
             table.parentNode.removeChild(table);
         }.bind(this));
@@ -250,17 +249,8 @@ cinema.ViewPlaces  = function(id){
 
                 if(!elem.dataset.place) return;
 
-                elem.classList.add('choose');
+                elem.classList.toggle('choose');
                 that._model.setData(that._sessionId, 'places', elem.dataset.place);
-
-                
-                //if(!elem.classList.contains('choose')) {
-                //    elem.classList.add('choose');
-                //    that._model.setData(that._sessionId, 'places', elem.dataset.place);
-                //} else {
-                //    elem.classList.remove('choose');
-                //    that._model.setData(that._sessionId, 'places', elem.dataset.place);
-                //}
 
             });
         }

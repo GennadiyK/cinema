@@ -39,14 +39,29 @@ cinema.sessionModel = {
 
 cinema.sessionModel.init(sessionData);
 
+cinema.sessionTemplateModel = {
+    activeTemplate: 'sessionTemplate',
+
+    getActiveTemplate: function(){
+        return this.activeTemplate;
+    },
+
+    setActiveTemplate : function(templateId) {
+        this.activeTemplate = templateId;
+    }
+
+};
+
+
 cinema.ViewSession = function(sessionId) {
     this._template = null;
     this._model = cinema.sessionModel;
-    this._templateId = 'sessionTemplate';
+    this._templateId = null;
     this._sessionId = sessionId;
     this._row = null;
 
     this.init = function() {
+        this.getTemplateId();
         this.getTemplate(this._templateId);
         this.changingTemplate();
     };
@@ -58,29 +73,33 @@ cinema.ViewSession = function(sessionId) {
         return this._row;
     };
 
-
-    this.changeTemplateId = function(elem) {
-        if(elem.classList.contains('active')) {
-            this._templateId = elem.dataset.template;
-        }
+    this.getTemplateId = function(){
+        this._templateId = cinema.sessionTemplateModel.getActiveTemplate();
         return this._templateId;
     };
 
     this.changingTemplate = function() {
         var btn = document.querySelectorAll('.chooseTemplate');
         var that = this;
+
         for(var i = 0; i < btn.length; i++) {
             btn[i].addEventListener('click', function(e){
                 e.preventDefault();
-                if(this.parentNode.querySelector('.active')){
-                    this.parentNode.querySelector('.active').classList.remove('active');
-                }
-                this.classList.toggle('active');
 
-                that.changeTemplateId(this);
+                cinema.sessionTemplateModel.setActiveTemplate(this.dataset.template);
+                that.getTemplateId();
                 that.getTemplate(that._templateId);
+                
+
+                if(e.target.classList.contains('active')) {
+                   return;
+                }
+
+                this.parentNode.querySelector('.active').classList.remove('active');
+                this.classList.add('active');
                 document.getElementById('sessions').tBodies[0].innerHTML = '';
                 document.getElementById('sessions').tBodies[0].appendChild(that.render());
+
             });
         }
     };
@@ -187,7 +206,9 @@ cinema.ViewSession = function(sessionId) {
             modalBg.classList.remove('in');
             modalBg.classList.add('hidden');
             table = modal.querySelector('.placesTable');
-            table.parentNode.removeChild(table);
+            if(table) {
+                table.parentNode.removeChild(table);
+            }
         }.bind(this));
     }
 };

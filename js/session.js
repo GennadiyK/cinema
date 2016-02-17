@@ -39,7 +39,7 @@ cinema.sessionModel = {
 
 cinema.sessionModel.init(sessionData);
 
-cinema.sessionTemplateModel = {
+cinema.ssettingsModel = {
     activeTemplate: 'sessionTemplate',
 
     getActiveTemplate: function(){
@@ -74,7 +74,7 @@ cinema.ViewSession = function(sessionId) {
     };
 
     this.getTemplateId = function(){
-        this._templateId = cinema.sessionTemplateModel.getActiveTemplate();
+        this._templateId = cinema.ssettingsModel.getActiveTemplate();
         return this._templateId;
     };
 
@@ -86,10 +86,10 @@ cinema.ViewSession = function(sessionId) {
             btn[i].addEventListener('click', function(e){
                 e.preventDefault();
 
-                cinema.sessionTemplateModel.setActiveTemplate(this.dataset.template);
+                cinema.ssettingsModel.setActiveTemplate(this.dataset.template);
                 that.getTemplateId();
                 that.getTemplate(that._templateId);
-                
+
 
                 if(e.target.classList.contains('active')) {
                    return;

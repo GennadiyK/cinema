@@ -83,9 +83,9 @@ function setRandomData() {
     }
     var visitDate = new VisitDate(date);
 
-    for(var i = 0; i < peoplesData.length; i++) {
+    for(var i = 0; i < visitorsData.length; i++) {
 
-        if(peoplesData[i]['id'] === randomNum) {
+        if(visitorsData[i]['id'] === randomNum) {
             newVisitor = false;
 
             break;
@@ -96,13 +96,13 @@ function setRandomData() {
     if(newVisitor) {
         cinema.modelVisitors.addNewVisitor({"id":randomNum,"name":"Name" + randomNum,"photo":"i/photos/photo.png","visit":1,"personal":0,"date": visitDate.showDate() + ' / ' + visitTime.showVisitTime()});
 
-    } else if(peoplesData[randomNum]) {
+    } else if(visitorsData[randomNum]) {
 
-        peoplesData[randomNum]['visit']++;
+        visitorsData[randomNum]['visit']++;
 
         cinema.modelVisitors.setData(randomNum, 'date', visitDate.showDate() + ' / ' + visitTime.showVisitTime());
 
-        cinema.modelVisitors.setData(randomNum, 'visit', peoplesData[randomNum]['visit']);
+        cinema.modelVisitors.setData(randomNum, 'visit', visitorsData[randomNum]['visit']);
 
     }
 

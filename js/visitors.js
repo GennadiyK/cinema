@@ -81,9 +81,10 @@ cinema.ViewVisitor = function(visitorId) {
         this.getVisitorFromModel(this._visitorId);
         this._model.addEventListener('change', function(id, key, val) {
             if(this._visitorId != id) return;
-
-            this.render();
-
+            if(this._allowRender) {
+                this.render();
+            }
+            this.reRender();
         }.bind(this));
 
     };
@@ -97,10 +98,9 @@ cinema.ViewVisitor = function(visitorId) {
 
     this.reRender = function() {//if dada reload
         if(!this._allowRender) {
-            console.log(this._allowRender);
            return;
         }
-
+        console.log(this._model.getData(this._visitorId, 'name') + ':' + this._model.getData(this._visitorId, 'visit'));
         this._row.querySelectorAll('[data-visitor="name"]')[0].innerHTML = this._model.getData(this._visitorId, 'name');
         this._row.querySelectorAll('[data-visitor="visit"]')[0].innerHTML = this._model.getData(this._visitorId, 'visit');
     };

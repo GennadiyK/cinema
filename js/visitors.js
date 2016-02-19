@@ -84,7 +84,6 @@ cinema.ViewVisitor = function(visitorId) {
             if(this._allowRender) {
                 this.render();
             }
-            this.reRender();
         }.bind(this));
 
     };
@@ -214,11 +213,13 @@ cinema.ViewVisitor = function(visitorId) {
 
     this.cancelEditData = function(field, val){
         field.innerHTML = val;
+        this._allowRender = true;
     };
 
     this.saveEditData = function(field, key, newVal) {
         cinema.modelVisitors.setData(that._visitorId, key, newVal);
         field.innerHTML = newVal;
+        this._allowRender = true;
     };
 
 

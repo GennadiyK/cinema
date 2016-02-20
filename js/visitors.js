@@ -59,8 +59,15 @@ cinema.modelVisitors = {
             }
         }
     },
-    setDataFromJSON: function (data) {//
+    setDataFromJSON: function (data) {
         this._data = data;
+    },
+    validateName: function(value) {
+        var reg = /\d/g;
+
+        if(value.match(reg)) {
+            return false;
+        }
     }
 };
 cinema.modelVisitors.init(visitorsData);
@@ -99,7 +106,6 @@ cinema.ViewVisitor = function(visitorId) {
         if(!this._allowRender) {
            return;
         }
-        console.log(this._model.getData(this._visitorId, 'name') + ':' + this._model.getData(this._visitorId, 'visit'));
         this._row.querySelectorAll('[data-visitor="name"]')[0].innerHTML = this._model.getData(this._visitorId, 'name');
         this._row.querySelectorAll('[data-visitor="visit"]')[0].innerHTML = this._model.getData(this._visitorId, 'visit');
     };
@@ -197,6 +203,22 @@ cinema.ViewVisitor = function(visitorId) {
 
         inputField.focus();
 
+        inputField.addEventListener('change', function(){
+            if(that._model.validateName(this.value) === false) {
+                this.parentNode.classList.add('has-error');
+                if(this.parentNode.classList.contains('has-success')) {
+                    this.parentNode.classList.remove('has-success');
+                    this.parentNode.classList.add('has-error');
+                }
+            } else {
+                this.parentNode.classList.add('has-success');
+                if(this.parentNode.classList.contains('has-error')) {
+                    this.parentNode.classList.remove('has-error');
+                    this.parentNode.classList.add('has-success');
+                }
+            }
+        });
+
         cancelButton.addEventListener('click', function(e){
             e.preventDefault();
 
@@ -205,6 +227,7 @@ cinema.ViewVisitor = function(visitorId) {
 
         saveButton.addEventListener('click', function(e){
             e.preventDefault();
+
             newInputValue = inputField.value;
 
             that.saveEditData(field, 'name', newInputValue);

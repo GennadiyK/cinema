@@ -176,7 +176,6 @@ cinema.ViewVisitor = function(visitorId) {
     };
     this.editFieldValue = function(field) {
         that._allowRender = false;
-        that._isDisable = true;
         var visitorName = cinema.modelVisitors.getData(that._visitorId, 'name');
         var newInputValue;
         var inputContainer = document.createElement('div');

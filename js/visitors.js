@@ -63,9 +63,9 @@ cinema.modelVisitors = {
         this._data = data;
     },
     validateName: function(value) {
-        var reg = /\d/g;
+        var reg = /^[a-zA-Z''-'\s]{1,40}$/;
 
-        if(value.match(reg)) {
+        if(!value.match(reg)) {
             return false;
         }
     }
@@ -81,6 +81,7 @@ cinema.ViewVisitor = function(visitorId) {
     this._templateId =  'visitorTemplate';
     this._row = null;
     this._allowRender = true;
+    this._isDisable = false;
 
     this.init =  function() {
 
@@ -175,6 +176,7 @@ cinema.ViewVisitor = function(visitorId) {
     };
     this.editFieldValue = function(field) {
         that._allowRender = false;
+        that._isDisable = true;
         var visitorName = cinema.modelVisitors.getData(that._visitorId, 'name');
         var newInputValue;
         var inputContainer = document.createElement('div');
@@ -203,19 +205,12 @@ cinema.ViewVisitor = function(visitorId) {
 
         inputField.focus();
 
-        inputField.addEventListener('change', function(){
+        inputField.addEventListener('keyup', function(){
+
             if(that._model.validateName(this.value) === false) {
-                this.parentNode.classList.add('has-error');
-                if(this.parentNode.classList.contains('has-success')) {
-                    this.parentNode.classList.remove('has-success');
-                    this.parentNode.classList.add('has-error');
-                }
+                that.disabledFieldWithError(this);
             } else {
-                this.parentNode.classList.add('has-success');
-                if(this.parentNode.classList.contains('has-error')) {
-                    this.parentNode.classList.remove('has-error');
-                    this.parentNode.classList.add('has-success');
-                }
+                that.enabledFieldWithSucsess(this);
             }
         });
 
@@ -227,11 +222,31 @@ cinema.ViewVisitor = function(visitorId) {
 
         saveButton.addEventListener('click', function(e){
             e.preventDefault();
+            if(that._isDisable === false) {
+                newInputValue = inputField.value;
 
-            newInputValue = inputField.value;
-
-            that.saveEditData(field, 'name', newInputValue);
+                that.saveEditData(field, 'name', newInputValue);
+            }
         });
+    };
+
+    this.disabledFieldWithError = function(field) {
+        that._isDisable = true;
+        field.classList.add('error');
+        if(field.classList.contains('success')) {
+            field.classList.remove('success');
+            field.classList.add('error');
+        }
+
+    };
+
+    this.enabledFieldWithSucsess = function(field) {
+        that._isDisable = false;
+        field.classList.add('success');
+        if(field.classList.contains('error')) {
+            field.classList.remove('error');
+            field.classList.add('success');
+        }
     };
 
     this.cancelEditData = function(field, val){
@@ -241,6 +256,7 @@ cinema.ViewVisitor = function(visitorId) {
 
     this.saveEditData = function(field, key, newVal) {
         cinema.modelVisitors.setData(that._visitorId, key, newVal);
+        console.log(cinema.modelVisitors.getData(that._visitorId,'name'));
         field.innerHTML = newVal;
         this._allowRender = true;
     };

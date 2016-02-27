@@ -125,4 +125,3 @@ cinema.viewFilmCollection = {
 
 cinema.viewFilmCollection.init();
 
-

@@ -209,7 +209,7 @@ cinema.ViewVisitor = function(visitorId) {
             if(that._model.validateName(this.value) === false) {
                 that.disabledFieldWithError(this);
             } else {
-                that.enabledFieldWithSucsess(this);
+                that.enabledFieldWithSuccess(this);
             }
         });
 
@@ -239,7 +239,7 @@ cinema.ViewVisitor = function(visitorId) {
 
     };
 
-    this.enabledFieldWithSucsess = function(field) {
+    this.enabledFieldWithSuccess = function(field) {
         that._isDisable = false;
         field.classList.add('success');
         if(field.classList.contains('error')) {
@@ -371,3 +371,19 @@ cinema.viewVisitorCollection = {
 
 cinema.viewVisitorCollection.init();
 
+
+function testIsEditField(className) {
+    var td = document.createElement('td');
+
+    var viewVisitor = new cinema.ViewVisitor(0);
+
+    viewVisitor.editFieldValue(td);
+
+    if(td.querySelector(className)) {
+        console.log('no error');
+    } else {
+        console.log('ERROR: TD without Edit field group');
+    }
+}
+
+testIsEditField();

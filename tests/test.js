@@ -1,8 +1,17 @@
-var assert = require('assert');
-describe('Array', function() {
-    describe('#testIsEditField()', function () {
-        it('should return -1 when the value is not present', function () {
-            assert.equal(-1, testIsEditField('.input-group'));
-        });
-    });
-});
+function assert(value, desc) {
+    var li = document.createElement('li');
+    li.className = value ? 'pass' : 'fail';
+    li.appendChild(document.createTextNode(desc));
+    document.getElementById('result').appendChild(li);
+}
+
+
+
+
+window.onload = function() {
+    assert(true, 'true, a NOT equally b');
+    assert(false, 'Fail, a equally b!');
+    console.log(cinema);
+
+
+};

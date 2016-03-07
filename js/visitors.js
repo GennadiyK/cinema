@@ -400,4 +400,4 @@ function testAddNewVisitor(){
 
 testInitModel();
 testData();
-testAddNewVisitor();
+testAddNewVisitor();  

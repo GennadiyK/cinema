@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Cinema</title>
+    <meta charset="UTF-8">
+    <title>Cinema</title>
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css"/>
+    <style>
+        .pass {
+            color: green;
+        }
+
+        .fail {
+            color: red;
+        }
+    </style>
 </head>
 <body>
+<div id="test-result"></div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-3">
@@ -46,12 +56,12 @@
 
 <!-- visitor template -->
 <script type="text/template" id="visitorTemplate">
-      <td>{{id}}</td>
-      <td class="edit" data-visitor="name">{{name}}</td>
-      <td><img src="{{photo}}" alt="" class="photo"></td>
-      <td data-visitor="visit">{{visit}}</td>
-      <td>{{personal}}</td>
-      <td>{{date}}</td>
+    <td>{{id}}</td>
+    <td class="edit" data-visitor="name">{{name}}</td>
+    <td><img src="{{photo}}" alt="" class="photo"></td>
+    <td data-visitor="visit">{{visit}}</td>
+    <td>{{personal}}</td>
+    <td>{{date}}</td>
 </script>
 <!-- END visitor template -->
 
@@ -59,9 +69,9 @@
 <script type="text/template" id="allVisitorsTemplate">
     <table class="table table-bordered table-striped">
         <thead>
-            <tr>
-                <th>id</th><th>name</th><th>photo</th><th>visit</th><th>personal</th><th>date/time</th>
-            </tr>
+        <tr>
+            <th>id</th><th>name</th><th>photo</th><th>visit</th><th>personal</th><th>date/time</th>
+        </tr>
         </thead>
     </table>
 </script>
@@ -111,6 +121,9 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <div id="modalBg" class="modal-backdrop fade hidden"></div>
+<!-- test function -->
+<script src="tests/assert.js"></script>
+<!-- END test function-->
 <script src="js/visitorsData.js"></script>
 <script src="js/filmsData.js"></script>
 <script src="js/sessionData.js"></script>
@@ -118,5 +131,6 @@
 <script src="js/films.js"></script>
 <script src="js/session.js"></script>
 <script src="js/randomDataOfVisitor.js"></script>
+
 </body>
 </html>

@@ -9,7 +9,6 @@ cinema.modelVisitors = {
     },
     init: function (data) {
         this.setDataFromJSON(data);
-
     },
     reload: function (data) { // получение заново данных, и запуск функций из массива свойства объекта reload
         this.setDataFromJSON(data);
@@ -70,6 +69,7 @@ cinema.modelVisitors = {
         }
     }
 };
+
 cinema.modelVisitors.init(visitorsData);
 
 
@@ -105,7 +105,7 @@ cinema.ViewVisitor = function(visitorId) {
 
     this.reRender = function() {//if dada reload
         if(!this._allowRender) {
-           return;
+            return;
         }
         this._row.querySelectorAll('[data-visitor="name"]')[0].innerHTML = this._model.getData(this._visitorId, 'name');
         this._row.querySelectorAll('[data-visitor="visit"]')[0].innerHTML = this._model.getData(this._visitorId, 'visit');
@@ -164,7 +164,7 @@ cinema.ViewVisitor = function(visitorId) {
         return this._row;
     };
     this.eventListener = function(row) {
-       var editNode = row.querySelectorAll('.edit');
+        var editNode = row.querySelectorAll('.edit');
         var td = [].slice.call(editNode);
 
 
@@ -302,7 +302,7 @@ cinema.viewVisitorCollection = {
     init: function () {
         this.render();
         this._model.addEventListener('addNewVisitor', function(){
-           this.render();
+            this.render();
         }.bind(this));
     },
     render: function () {
@@ -372,18 +372,32 @@ cinema.viewVisitorCollection = {
 cinema.viewVisitorCollection.init();
 
 
-function testIsEditField(className) {
-    var td = document.createElement('td');
+//tests
 
-    var viewVisitor = new cinema.ViewVisitor(0);
+function testInitModel() {
+    assert(cinema.modelVisitors.init, 'init function is running');
 
-    viewVisitor.editFieldValue(td);
-
-    if(td.querySelector(className)) {
-        console.log('no error');
-    } else {
-        console.log('ERROR: TD without Edit field group');
-    }
 }
 
-testIsEditField();
+function testData() {
+    assert(cinema.modelVisitors._data === visitorsData, 'data is visitorsData');
+}
+
+function testAddNewVisitor(){
+    var visitors = cinema.modelVisitors._data;
+    var visitor = {"id":100,"name":"Test","photo":"i/photos/photo.png","visit":0,"personal":0,"date":"00-00-0000"};
+    var testData;
+    cinema.modelVisitors.addNewVisitor(visitor);
+    for( var i = 0;  i < visitors.length; i++) {
+        for(var key in visitors[i]) {
+            if(visitors[i][key] === 'Test') {
+                testData = visitors[i][key];
+            }
+        }
+    }
+    assert(testData === 'Test', 'cinema.modelVisitors.addNewVisitor is working')
+}
+
+testInitModel();
+testData();
+testAddNewVisitor();

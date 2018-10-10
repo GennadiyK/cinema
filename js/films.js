@@ -124,4 +124,5 @@ cinema.viewFilmCollection = {
 
 
 cinema.viewFilmCollection.init();
+//test
 
